@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Control Ejecutivo ANI - Proyectos Carreteros (v4.2 Corregido)</title>
+  <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
+  <style>
+    :root {
+      --ani-blue: #0033A0; --ani-yellow: #FFC72C; --background-color: #f0f2f5;
+      --card-background: #ffffff; --text-color: #333; --light-text: #6c757d;
+      --border-color: #dee2e6; --danger-color: #dc3545; --success-color: #28a745;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0; background-color: var(--background-color); color: var(--text-color);
+    }
+    .header {
+      background-color: var(--ani-blue); color: white; padding: 15px 30px;
+      display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .header h1 { margin: 0; font-size: 1.5em; }
+    .main-container { padding: 30px; }
+    .selector-container {
+      background: var(--card-background); padding: 20px; border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); margin-bottom: 20px; display: none; align-items: center;
+    }
+    label { font-weight: bold; margin-right: 10px; color: var(--ani-blue); }
+    select {
+      width: 100%; max-width: 500px; padding: 10px; font-size: 1em;
+      border: 1px solid var(--border-color); border-radius: 5px;
+    }
+    .tabs-container {
+      display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px; margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px; cursor: pointer; background-color: #e9ecef;
+      border: none; border-radius: 5px; font-weight: 600; transition: all 0.2s ease-in-out;
+    }
+    .tab:hover { background-color: #ced4da; }
+    .tab.active {
+      background-color: var(--ani-blue); color: white;
+      box-shadow: 0 2px 5px rgba(0, 51, 160, 0.2);
+    }
+    .content-area { display: none; }
+    .content-area.active { display: block; }
+    
+    /* Estilos Dashboard */
+    .dashboard-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .kpi-card {
+      background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      padding: 20px; text-align: center; border-top: 4px solid var(--ani-blue);
+    }
+    .kpi-card.summary { grid-column: 1 / -1; text-align: left; }
+    .kpi-value { font-size: 2.8em; font-weight: bold; color: var(--ani-blue); margin: 0; }
+    .kpi-label { font-size: 1.1em; color: var(--light-text); margin-top: 5px; }
+    .dashboard-charts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .chart-item {
+        background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        padding: 15px;
+    }
+    @media (max-width: 1200px) { .dashboard-charts-grid { grid-template-columns: 1fr; } }
+
+
+    /* Estilos Timeline */
+    .timeline-container { position: relative; padding: 20px 0; }
+    .timeline-container::before {
+      content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
+      width: 4px; background: var(--border-color); border-radius: 2px;
+    }
+    .timeline-entry {
+      position: relative; margin-left: 50px; margin-bottom: 30px;
+      background: var(--card-background); padding: 20px; border-radius: 8px;
+      border-left: 4px solid var(--ani-yellow); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .timeline-entry::before {
+      content: '📅'; position: absolute; left: -48px; top: 15px; width: 30px; height: 30px;
+      border-radius: 50%; background: white; border: 4px solid var(--ani-blue);
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .timeline-date { font-size: 1.1em; font-weight: bold; color: var(--ani-blue); margin-bottom: 15px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+    .kpi-item { padding: 15px; border-radius: 5px; background-color: #f8f9fa; }
+    .kpi-item strong { display: block; margin-bottom: 5px; color: #495057; }
+    .kpi-item.problematica { border-left: 3px solid var(--danger-color); }
+    .kpi-item.avance { border-left: 3px solid var(--success-color); }
+    .kpi-item.estado { border-left: 3px solid #007bff; }
+
+    .summary-content { background: var(--card-background); padding: 20px; border-radius: 8px; }
+    .no-data { padding: 20px; text-align: center; color: var(--light-text); font-style: italic; }
+  </style>
+</head>
+<body>
+  <header class="header"><h1>🏛️ Panel de Control Ejecutivo ANI - Proyectos Carreteros</h1></header>
+  <main class="main-container">
+    <div class="selector-container" id="selector-container">
+      <label for="projectSelect">Seleccionar Proyecto:</label>
+      <select id="projectSelect"></select>
+    </div>
+    <div id="tabsContainer" class="tabs-container"></div>
+    
+    <div id="DashboardGeneral" class="content-area active">
+        <div class="dashboard-kpi-grid">
+            <div class="kpi-card"><p class="kpi-value" id="db-total-proyectos">--</p><p class="kpi-label">Proyectos Totales en Portafolio</p></div>
+            <div class="kpi-card"><p class="kpi-value" id="db-proyectos-con-problemas">--</p><p class="kpi-label">Proyectos con Problemáticas Recientes</p></div>
+            <div class="kpi-card"><p class="kpi-value" id="db-completitud">--</p><p class="kpi-label">Completitud de Seguimiento</p></div>
+            <div class="kpi-card summary">
+                <p class="kpi-label" style="font-size: 1.2em; color: var(--ani-blue); font-weight: bold;">Resumen Ejecutivo del Portafolio</p>
+                <p id="db-resumen-texto">Calculando resumen...</p>
+            </div>
+        </div>
+        <div class="dashboard-charts-grid">
+            <div class="chart-item" id="chart-seguimiento-componente"></div>
+            <div class="chart-item" id="chart-top-problematicas"></div>
+            <div class="chart-item" id="chart-problemas-timeline"></div>
+            <div class="chart-item" id="chart-problemas-componente"></div>
+        </div>
+    </div>
+    <div id="ProjectDetail" class="content-area"></div>
+  </main>
+
+  <script>
+    const jsonPath = "proyectos_carreteros_completo.json";
+    let projectData = {};
+    let allFollowUps = [];
+
+    async function loadJSON() {
+      try {
+        const response = await fetch(jsonPath);
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        projectData = await response.json();
+        
+        preprocessData();
+        populateProjects();
+        setupTabs();
+      } catch (error) {
+        document.body.innerHTML = `<h2 style='color:red; text-align:center;'>⚠️ Error Crítico al Cargar los Datos.</h2><p style='text-align:center;'>Asegúrate de que el archivo <strong>'${jsonPath}'</strong> se encuentre en la misma carpeta y estés ejecutando esta página desde un servidor local (como la extensión "Live Server" de VS Code).</p>`;
+        console.error(error);
+      }
+    }
+
+    function preprocessData() {
+        allFollowUps = [];
+        Object.keys(projectData).forEach(projectName => {
+            const project = projectData[projectName];
+            if (project && project.componentes) {
+                Object.keys(project.componentes).forEach(componentName => {
+                    if (project.componentes[componentName] && Array.isArray(project.componentes[componentName])) {
+                        project.componentes[componentName].forEach(followUp => {
+                            if (followUp && followUp.fecha) {
+                                allFollowUps.push({ ...followUp, projectName, componentName });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function populateProjects() {
+      const projectSelect = document.getElementById("projectSelect");
+      Object.keys(projectData).sort().forEach(project => {
+        const option = document.createElement("option");
+        option.value = project; option.textContent = project;
+        projectSelect.appendChild(option);
+      });
+      projectSelect.addEventListener("change", () => showProjectDetail(projectSelect.value));
+    }
+
+    function setupTabs() {
+        const tabsContainer = document.getElementById("tabsContainer");
+        tabsContainer.innerHTML = '';
+        const dashboardTab = document.createElement("button");
+        dashboardTab.textContent = "Dashboard General";
+        dashboardTab.className = "tab active";
+        dashboardTab.onclick = () => switchView('DashboardGeneral');
+        tabsContainer.appendChild(dashboardTab);
+
+        const projectDetailTab = document.createElement("button");
+        projectDetailTab.textContent = "Detalle por Proyecto"; projectDetailTab.className = "tab";
+        projectDetailTab.onclick = () => {
+            switchView('ProjectDetail');
+            showProjectDetail(document.getElementById("projectSelect").value);
+        };
+        tabsContainer.appendChild(projectDetailTab);
+        
+        switchView('DashboardGeneral');
+        renderDashboard();
+    }
+    
+    function switchView(viewId) {
+        document.querySelectorAll('.content-area').forEach(el => el.style.display = 'none');
+        document.getElementById(viewId).style.display = 'block';
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        const activeTab = viewId === 'DashboardGeneral' ? document.querySelector('.tab:first-child') : document.querySelector('.tab:last-child');
+        if(activeTab) activeTab.classList.add('active');
+        document.getElementById('selector-container').style.display = viewId === 'ProjectDetail' ? 'flex' : 'none';
+    }
+
+    function renderDashboard() {
+        const projectNames = Object.keys(projectData);
+        const totalProyectos = projectNames.length;
+
+        const proyectosConProblemas = new Set();
+        const seguimientosRelevantes = allFollowUps.filter(s => (s.avance && s.avance !== 'nan') || (s.estado && s.estado !== 'nan') || s.problematica);
+        
+        projectNames.forEach(name => {
+            const seguimientosProyecto = seguimientosRelevantes.filter(s => s.projectName === name);
+            if (seguimientosProyecto.length > 0) {
+                const ultimoSeguimiento = seguimientosProyecto.sort((a,b) => new Date(b.fecha) - new Date(a.fecha))[0];
+                if (ultimoSeguimiento && ultimoSeguimiento.problematica) {
+                    proyectosConProblemas.add(name);
+                }
+            }
+        });
+
+        let totalEntradas = 0; let entradasCompletadas = 0;
+        Object.values(projectData).forEach(p => {
+            if(p && p.componentes){
+                Object.values(p.componentes).forEach(c => {
+                    if(Array.isArray(c)){
+                        totalEntradas += c.length;
+                        entradasCompletadas += c.filter(e => e && ((e.avance && e.avance !== 'nan') || (e.estado && e.estado !== 'nan') || e.problematica)).length;
+                    }
+                });
+            }
+        });
+        const completitud = totalEntradas > 0 ? (entradasCompletadas / totalEntradas) * 100 : 0;
+
+        document.getElementById('db-total-proyectos').textContent = totalProyectos;
+        document.getElementById('db-proyectos-con-problemas').textContent = proyectosConProblemas.size;
+        document.getElementById('db-completitud').textContent = `${completitud.toFixed(1)}%`;
+        document.getElementById('db-resumen-texto').textContent = `Se está dando seguimiento a un portafolio de ${totalProyectos} proyectos carreteros. Actualmente, ${proyectosConProblemas.size} de ellos reportan una problemática activa en su último seguimiento, y la completitud general de los reportes es del ${completitud.toFixed(1)}%.`;
+
+        renderSeguimientoComponenteChart();
+        renderTopProblematicasChart();
+        renderProblemasTimelineChart();
+        renderProblemasPorComponenteChart();
+    }
+    
+    const defaultConfig = { responsive: true, displaylogo: false };
+    
+    function renderSeguimientoComponenteChart() {
+        const counts = allFollowUps.filter(s => (s.avance && s.avance !== 'nan') || (s.estado && s.estado !== 'nan')).reduce((acc, s) => {
+            acc[s.componentName] = (acc[s.componentName] || 0) + 1; return acc; }, {});
+        const sortedData = Object.entries(counts).sort(([,a],[,b]) => b-a);
+        const plotData = [{ x: sortedData.map(e => e[0]), y: sortedData.map(e => e[1]), type: 'bar', text: sortedData.map(e => e[1]), textposition: 'auto', marker: { color: '#005b96' } }];
+        const layout = { title: 'Volumen de Seguimiento por Componente', yaxis: {title: 'N° de Reportes'} };
+        Plotly.newPlot('chart-seguimiento-componente', plotData, layout, defaultConfig);
+    }
+
+    function renderTopProblematicasChart() {
+        const counts = allFollowUps.filter(s => s.problematica).reduce((acc, s) => {
+            acc[s.projectName] = (acc[s.projectName] || 0) + 1; return acc; }, {});
+        const top5 = Object.entries(counts).filter(([, count]) => count > 0).sort(([,a],[,b]) => b-a).slice(0, 5);
+        const plotData = [{ x: top5.map(e => e[1]), y: top5.map(e => e[0]), type: 'bar', orientation: 'h', text: top5.map(e => e[1]), textposition: 'outside', marker: { color: '#c1272d' } }];
+        const layout = { title: 'Top 5 Proyectos con Más Problemáticas Reportadas', xaxis: {title: 'N° de Reportes de Problemática'}, yaxis: {autorange: 'reversed', automargin: true}, margin: { l: 300 }};
+        Plotly.newPlot('chart-top-problematicas', plotData, layout, defaultConfig);
+    }
+    
+    function renderProblemasTimelineChart() {
+        const problemasPorFecha = allFollowUps.filter(s => s.problematica).reduce((acc, s) => {
+            const fecha = s.fecha.split('T')[0]; acc[fecha] = (acc[fecha] || 0) + 1; return acc; }, {});
+        const sortedFechas = Object.entries(problemasPorFecha).sort((a,b) => new Date(a[0]) - new Date(b[0]));
+        const plotData = [{ x: sortedFechas.map(e => e[0]), y: sortedFechas.map(e => e[1]), type: 'scatter', mode: 'lines+markers', line: {color: '#ffc107', width: 3} }];
+        const layout = { title: 'Tendencia de Problemáticas Reportadas por Semana', xaxis: {title: 'Fecha de Reporte'}, yaxis: {title: 'N° de Nuevas Problemáticas'} };
+        Plotly.newPlot('chart-problemas-timeline', plotData, layout, defaultConfig);
+    }
+
+    function renderProblemasPorComponenteChart() {
+        const problemasPorComp = allFollowUps.filter(s => s.problematica).reduce((acc, s) => {
+            acc[s.componentName] = (acc[s.componentName] || 0) + 1; return acc; }, {});
+        const plotData = [{ values: Object.values(problemasPorComp), labels: Object.keys(problemasPorComp), type: 'pie', hole: 0.4, textinfo: 'percent+label', hoverinfo: 'label+value' }];
+        const layout = { title: 'Distribución de Problemáticas por Componente' };
+        Plotly.newPlot('chart-problemas-componente', plotData, layout, defaultConfig);
+    }
+
+    // --- LÓGICA DE DETALLE POR PROYECTO (CÓDIGO CORREGIDO Y RESTAURADO) ---
+    function showProjectDetail(projectName) {
+        const detailContainer = document.getElementById("ProjectDetail");
+        const project = projectData[projectName];
+        if (!project) return;
+        
+        const componentes = project.componentes || {};
+        const allTabs = ["Resumen"].concat(Object.keys(componentes).sort());
+        
+        let tabsHtml = '<div class="tabs-container" id="project-tabs">';
+        allTabs.forEach(comp => {
+            tabsHtml += `<button class="tab project-tab" data-component="${comp}">${comp}</button>`;
+        });
+        tabsHtml += '</div><div id="project-component-content"></div>';
+        detailContainer.innerHTML = tabsHtml;
+
+        document.querySelectorAll('.project-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelectorAll('.project-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                renderProjectComponentContent(projectName, e.target.dataset.component);
+            });
+        });
+        
+        if (detailContainer.querySelector('.project-tab')) {
+            detailContainer.querySelector('.project-tab').click();
+        }
+    }
+
+    function renderProjectComponentContent(projectName, componentName) {
+      const contentDiv = document.getElementById("project-component-content");
+      const project = projectData[projectName];
+      
+      if (componentName === "Resumen") {
+        contentDiv.innerHTML = `<div class="summary-content"><h3>📝 Resumen y Controversias del Proyecto</h3><div class="kpi-grid"><div class="kpi-item estado"><p>${project.resumen || "No hay resumen."}</p></div><div class="kpi-item problematica"><strong>Controversias:</strong><p>${project.controversias || "Sin registros."}</p></div></div></div>`;
+        return;
+      }
+
+      const entradas = (project.componentes[componentName] || [])
+        .filter(entry => (entry.avance && entry.avance !== 'nan') || (entry.estado && entry.estado !== 'nan') || entry.problematica)
+        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+      if (entradas.length === 0) {
+        contentDiv.innerHTML = '<div class="no-data"><p>No hay seguimientos relevantes para este componente.</p></div>';
+        return;
+      }
+      
+      let timelineHtml = '<div class="timeline-container">';
+      entradas.forEach(entry => {
+        timelineHtml += `<div class="timeline-entry"><div class="timeline-date">${new Date(entry.fecha).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</div><div class="kpi-grid">${(entry.avance && entry.avance !== 'nan') ? `<div class="kpi-item avance"><strong>Avance:</strong> ${entry.avance}</div>` : ''}${(entry.estado && entry.estado !== 'nan') ? `<div class="kpi-item estado"><strong>Estado:</strong> ${entry.estado}</div>` : ''}${entry.problematica ? `<div class="kpi-item problematica"><strong>Problemática:</strong> ${entry.problematica}</div>` : ''}</div></div>`;
+      });
+      timelineHtml += '</div>';
+      contentDiv.innerHTML = timelineHtml;
+    }
+
+    loadJSON();
+  </script>
+</body>
+</html>

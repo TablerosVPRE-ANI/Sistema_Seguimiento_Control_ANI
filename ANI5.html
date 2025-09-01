@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Proyectos Ferroviarios - ANI (Carga Completa)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .header h1 { color: #2c3e50; font-size: 2.5em; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; }
+        .header p { color: #7f8c8d; font-size: 1.1em; }
+        .project-selector { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .project-selector label { display: block; margin-bottom: 10px; color: #2c3e50; font-weight: 600; font-size: 1.1em; }
+        .project-selector select { width: 100%; padding: 15px; font-size: 1em; border: 2px solid #e1e8ed; border-radius: 10px; background: white; cursor: pointer; transition: all 0.3s ease; }
+        .project-selector select:hover { border-color: #667eea; }
+        .project-selector select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .dashboard-content { display: none; animation: fadeIn 0.5s ease; }
+        .dashboard-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .project-info { background: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .project-info h2 { color: #2c3e50; margin-bottom: 20px; font-size: 1.8em; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .info-item { padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #667eea; }
+        .info-item strong { color: #495057; display: block; margin-bottom: 5px; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-item span { color: #2c3e50; font-size: 1.1em; font-weight: 500; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab { padding: 12px 24px; background: white; border: 2px solid #e1e8ed; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; font-weight: 500; color: #495057; }
+        .tab:hover { background: #f8f9fa; transform: translateY(-2px); }
+        .tab.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: transparent; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3); }
+        .component-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .component-content.active { display: block; animation: fadeIn 0.5s ease; }
+        .component-content h3 { color: #2c3e50; margin-bottom: 25px; font-size: 1.5em; display: flex; align-items: center; gap: 10px; }
+        .timeline { position: relative; padding: 20px 0; }
+        .timeline-item { position: relative; padding-left: 40px; margin-bottom: 25px; border-left: 3px solid #e1e8ed; }
+        .timeline-item:last-child { border-left: none; }
+        .timeline-item::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #667eea; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .timeline-date { color: #667eea; font-weight: 600; margin-bottom: 5px; font-size: 0.9em; }
+        .timeline-content { background: #f8f9fa; padding: 15px; border-radius: 10px; color: #495057; line-height: 1.6; }
+        .add-update-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 50%; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.3s ease; z-index: 999; }
+        .add-update-btn:hover { transform: scale(1.1); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-overlay.visible { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-content h2 { color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #495057; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #e1e8ed; border-radius: 8px; font-size: 1em; }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .modal-actions button { padding: 10px 20px; border-radius: 8px; border: none; font-size: 1em; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #e1e8ed; color: #495057; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚂 Dashboard de Proyectos Ferroviarios</h1>
+            <p>Sistema de Monitoreo y Seguimiento - Agencia Nacional de Infraestructura</p>
+        </div>
+        <div class="project-selector">
+            <label for="projectSelect">Seleccione un Proyecto:</label>
+            <select id="projectSelect">
+                <option value="">-- Cargando proyectos --</option>
+            </select>
+        </div>
+        <div id="dashboardContent" class="dashboard-content">
+            <div class="project-info">
+                <h2 id="projectTitle">Información del Proyecto</h2>
+                <div class="info-grid" id="projectInfoGrid"></div>
+            </div>
+            <div class="tabs" id="componentTabs"></div>
+            <div id="componentContents"></div>
+        </div>
+    </div>
+    <button class="add-update-btn" id="addUpdateBtn" title="Registrar Nuevo Seguimiento">+</button>
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal-content">
+            <h2>Registrar Nuevo Seguimiento</h2>
+            <form id="updateForm">
+                <div class="form-group"><label for="modalProjectSelect">Proyecto</label><select id="modalProjectSelect" required></select></div>
+                <div class="form-group"><label for="modalComponentSelect">Componente</label><select id="modalComponentSelect" required></select></div>
+                <div class="form-group"><label for="modalDateInput">Fecha</label><input type="date" id="modalDateInput" required></div>
+                <div class="form-group"><label for="modalUpdateText">Estado / Avance</label><textarea id="modalUpdateText" required placeholder="Describa el estado o avance del componente..."></textarea></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelUpdateBtn">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Actualización</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const JSON_FILE_PATH = 'seguimiento_ferreo.json';
+        let projectsData = {};
+        let currentProject = null;
+
+        async function loadData() {
+            try {
+                const response = await fetch(JSON_FILE_PATH);
+                if (!response.ok) {
+                    throw new Error(`Error al cargar el archivo JSON. Asegúrate de que el archivo '${JSON_FILE_PATH}' exista.`);
+                }
+                projectsData = await response.json();
+                localStorage.setItem('ferroviarioData', JSON.stringify(projectsData));
+            } catch (error) {
+                console.error(error);
+                // Si fetch falla, intenta cargar desde localStorage como respaldo
+                const storedData = localStorage.getItem('ferroviarioData');
+                if (storedData) {
+                    projectsData = JSON.parse(storedData);
+                    alert("No se pudo cargar el archivo JSON. Mostrando la última versión de datos guardada.");
+                } else {
+                    document.body.innerHTML = `<h2 style='color:red; text-align:center;'>⚠️ Error Crítico al Cargar los Datos.</h2><p style='text-align:center;'>Asegúrate de que el archivo <strong>'${JSON_FILE_PATH}'</strong> esté en la misma carpeta y que estés ejecutando esta página desde un servidor local (como la extensión "Live Server" en VS Code).</p>`;
+                    return; // Detener la ejecución si no hay datos
+                }
+            }
+            initializeProjectSelector();
+        }
+
+        function saveData() {
+            localStorage.setItem('ferroviarioData', JSON.stringify(projectsData));
+        }
+
+        function initializeProjectSelector() {
+            const select = document.getElementById('projectSelect');
+            select.innerHTML = '<option value="">-- Seleccione un proyecto --</option>';
+            Object.keys(projectsData).filter(p => p !== 'nan').sort().forEach(projectName => {
+                const option = document.createElement('option');
+                option.value = projectName;
+                option.textContent = projectName;
+                select.appendChild(option);
+            });
+        }
+        
+        function showProjectDashboard(projectName) {
+            const project = projectsData[projectName];
+            if (!project) return;
+            currentProject = projectName;
+            document.getElementById('dashboardContent').classList.add('active');
+            updateProjectInfo(project);
+            createComponentTabs(project.Componentes);
+            if (project.Componentes && Object.keys(project.Componentes).length > 0) {
+              const firstComponent = Object.keys(project.Componentes)[0];
+              showComponent(firstComponent, project.Componentes[firstComponent]);
+            } else {
+                document.getElementById('componentContents').innerHTML = '<div class="no-data">Este proyecto no tiene componentes de seguimiento.</div>';
+            }
+        }
+        
+        function updateProjectInfo(project) {
+             document.getElementById('projectTitle').textContent = project.NombreProyecto;
+             const infoGrid = document.getElementById('projectInfoGrid');
+             infoGrid.innerHTML = `
+                 <div class="info-item"><strong>N° Contrato</strong><span>${project.NumeroContrato || 'N/A'}</span></div>
+                 <div class="info-item"><strong>Valor</strong><span>${formatCurrency(project.Valor)}</span></div>
+                 <div class="info-item"><strong>Concesionario</strong><span>${project.Concesionario || 'N/A'}</span></div>
+                 <div class="info-item"><strong>Fecha Inicio</strong><span>${formatDate(project.FechaInicio)}</span></div>
+             `;
+        }
+
+        function createComponentTabs(componentes) {
+            const tabsContainer = document.getElementById('componentTabs');
+            const contentsContainer = document.getElementById('componentContents');
+            tabsContainer.innerHTML = '';
+            contentsContainer.innerHTML = '';
+            if(!componentes) return;
+
+            Object.keys(componentes).forEach(componentName => {
+                if (componentName === 'Total') return;
+                const tab = document.createElement('div');
+                tab.className = 'tab';
+                tab.textContent = `${getComponentIcon(componentName)} ${componentName}`;
+                tab.onclick = () => showComponent(componentName, componentes[componentName]);
+                tabsContainer.appendChild(tab);
+                const content = document.createElement('div');
+                content.id = `component-${componentName}`;
+                content.className = 'component-content';
+                contentsContainer.appendChild(content);
+            });
+        }
+        
+        function showComponent(componentName, componentData) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.includes(componentName));
+            });
+            document.querySelectorAll('.component-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const contentElement = document.getElementById(`component-${componentName}`);
+            if (contentElement) {
+                contentElement.classList.add('active');
+                renderComponentContent(componentName, componentData, contentElement);
+            }
+        }
+
+        function renderComponentContent(componentName, componentData, container) {
+            let html = `<h3>${getComponentIcon(componentName)} Seguimiento ${componentName}</h3>`;
+            const entries = Object.entries(componentData)
+                .map(([key, value]) => ({ date: new Date(key.split('.')[0]), content: value }))
+                .filter(entry => !isNaN(entry.date.getTime()) && entry.content)
+                .sort((a, b) => b.date - a.date);
+
+            if (entries.length === 0) {
+                html += '<div class="no-data">No hay datos de seguimiento para este componente.</div>';
+            } else {
+                html += '<div class="timeline">';
+                entries.forEach(entry => {
+                    html += `<div class="timeline-item"><div class="timeline-date">${formatDate(entry.date)}</div><div class="timeline-content">${entry.content}</div></div>`;
+                });
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        const addUpdateBtn = document.getElementById('addUpdateBtn');
+        const updateModal = document.getElementById('updateModal');
+        const cancelUpdateBtn = document.getElementById('cancelUpdateBtn');
+        const updateForm = document.getElementById('updateForm');
+        const modalProjectSelect = document.getElementById('modalProjectSelect');
+        const modalComponentSelect = document.getElementById('modalComponentSelect');
+
+        addUpdateBtn.onclick = () => {
+            populateModalProjects();
+            updateModal.classList.add('visible');
+            document.getElementById('modalDateInput').valueAsDate = new Date();
+        };
+
+        function closeModal() { updateModal.classList.remove('visible'); updateForm.reset(); }
+        cancelUpdateBtn.onclick = closeModal;
+        window.onclick = (event) => { if (event.target == updateModal) closeModal(); };
+        
+        function populateModalProjects() {
+            modalProjectSelect.innerHTML = '<option value="">Seleccione...</option>';
+            Object.keys(projectsData).filter(p => p !== 'nan').sort().forEach(projectName => {
+                const option = document.createElement('option');
+                option.value = projectName; option.textContent = projectName;
+                modalProjectSelect.appendChild(option);
+            });
+            modalComponentSelect.innerHTML = '<option value="">Seleccione un proyecto primero</option>';
+        }
+
+        modalProjectSelect.onchange = () => {
+            const projectName = modalProjectSelect.value;
+            modalComponentSelect.innerHTML = '<option value="">Seleccione...</option>';
+            if (projectName && projectsData[projectName] && projectsData[projectName].Componentes) {
+                Object.keys(projectsData[projectName].Componentes).forEach(comp => {
+                    const option = document.createElement('option');
+                    option.value = comp; option.textContent = comp;
+                    modalComponentSelect.appendChild(option);
+                });
+            }
+        };
+
+        updateForm.onsubmit = (e) => {
+            e.preventDefault();
+            const projectName = modalProjectSelect.value;
+            const componentName = modalComponentSelect.value;
+            const date = document.getElementById('modalDateInput').value;
+            const updateText = document.getElementById('modalUpdateText').value;
+
+            if (projectName && componentName && date && updateText) {
+                if (!projectsData[projectName].Componentes[componentName]) {
+                    projectsData[projectName].Componentes[componentName] = {};
+                }
+                const uniqueDateKey = new Date(`${date}T12:00:00`).toISOString();
+                projectsData[projectName].Componentes[componentName][uniqueDateKey] = updateText;
+                saveData();
+                if(currentProject === projectName) showProjectDashboard(projectName);
+                alert('¡Actualización guardada con éxito!');
+                closeModal();
+            } else {
+                alert('Por favor, complete todos los campos.');
+            }
+        };
+
+        function getComponentIcon(name) {
+            const icons = {'Ambiental': '🌿', 'Predial': '🏘️', 'Social': '👥', 'Riesgos': '⚠️', 'J. Predial': '⚖️'};
+            return icons[name] || '📊';
+        }
+        function formatCurrency(value) {
+            if (typeof value === 'string' && value.toUpperCase() === 'INDETERMINADO') return value;
+            const num = Number(String(value).replace(/[^\d.-]/g, ''));
+            if (isNaN(num)) return 'N/A';
+            return new Intl.NumberFormat('es-CO', {style: 'currency', currency: 'COP', minimumFractionDigits: 0}).format(num);
+        }
+        function formatDate(dateString) {
+            if (!dateString || dateString === 'NaT') return 'N/A';
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+                return date.toLocaleDateString('es-CO', {year: 'numeric', month: 'short', day: 'numeric'});
+            } catch { return dateString; }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            document.getElementById('projectSelect').addEventListener('change', (e) => {
+                if (e.target.value) {
+                    showProjectDashboard(e.target.value);
+                } else {
+                    document.getElementById('dashboardContent').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

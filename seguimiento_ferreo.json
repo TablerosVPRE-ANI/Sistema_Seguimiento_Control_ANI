@@ -1,0 +1,275 @@
+{
+    "Contrato de obra Bogotá - Belencito - Dorada – Chiriguaná": {
+        "Codigo": 501.0,
+        "Modo": "Férreo",
+        "NombreProyecto": "Contrato de obra Bogotá - Belencito - Dorada – Chiriguaná",
+        "NumeroContrato": "VE-629 de 2022  Contrato Interadministrativo con FINDETER",
+        "Valor": 125209783618,
+        "MesAnioReferencia": "2022-10-01 00:00:00",
+        "Concesionario": "CTSA- Contratista de Findeter ",
+        "Interventor": "",
+        "Fiduciaria": "",
+        "FechaInicio": "2022-12-27 00:00:00",
+        "Terminacion": 2025.0,
+        "HitosOtrosies": "",
+        "Componentes": {
+            "Ambiental": {
+                "2024-11-18 00:00:00": "En operación",
+                "2024-11-18 00:00:00.1": "Sin novedad ",
+                "2024-11-25 00:00:00.1": "Pendiente remisión por parte de CTSA  pago visita seguimiento LAM6817",
+                "2024-12-06 00:00:00.1": "CTSA remite pago de visita seguimiento LAM6817, pendiente remitir a la ANLA, porque se está a la espera del pago de Dorada Chiriguaná"
+            },
+            "J. Predial": {
+                "2024-11-18 00:00:00.1": "sin novedad ",
+                "2024-12-06 00:00:00.1": "sin novedad",
+                "2024-12-20 00:00:00.1": "Se tienen pendiente reunión con Findeter para determinar cómo se realizará la presentación de informe de cumplimiento ambiental, para el sector Bogotá - Tuta "
+            },
+            "Predial": {
+                "2024-11-18 00:00:00": "No hay gestión predial.",
+                "2024-11-18 00:00:00.1": "Sin alertas",
+                "2024-11-25 00:00:00": "No hay gestión predial.",
+                "2024-11-25 00:00:00.1": "sin alertas",
+                "2024-12-06 00:00:00": "No hay gestión predial.",
+                "2024-12-06 00:00:00.1": "sin alertas",
+                "2024-12-13 00:00:00": "No hay gestión predial.",
+                "2024-12-13 00:00:00.1": "sin alertas",
+                "2024-12-20 00:00:00": "No hay gestión predial.",
+                "2024-12-20 00:00:00.1": "sin alertas",
+                "2024-12-27 00:00:00": "No hay gestión predial.",
+                "2024-12-27 00:00:00.1": "sin alertas"
+            },
+            "Riesgos": {
+                "2024-11-18 00:00:00.1": "Sin temas estratégicos en proceso",
+                "2024-12-13 00:00:00": "Sin temas estratégicos en proceso",
+                "2024-12-20 00:00:00": "Sin temas estratégicos en proceso"
+            },
+            "Social": {
+                "2024-12-13 00:00:00": "OPERACIÓN",
+                "2024-12-13 00:00:00.1": "SIN CONFLICTIVIDAD SOCIAL",
+                "2024-12-20 00:00:00": "OPERACIÓN",
+                "2024-12-20 00:00:00.1": "En proceso de revision y aprobacion de la Resolución de Pago “Por medio de la cual se ordena el pago de la suma para adelantar las gestiones necesarias para la recuperación del espacio público ocupado ilegalmente por terceros, dentro del denominado Triángulo de inversión del PK5+000”, por parte de la VGCON.",
+                "2025-02-21 00:00:00": "Sin Novedad "
+            }
+        }
+    },
+    "Dorada – Chiriguaná": {
+        "Codigo": 501.0,
+        "Modo": "Férreo",
+        "NombreProyecto": "Dorada – Chiriguaná",
+        "NumeroContrato": "VE- 639 2023  Contrato de Obra ",
+        "Valor": 71715321740,
+        "MesAnioReferencia": "2024-07-10 00:00:00",
+        "Concesionario": "Consorcio San Felipe Férreo ",
+        "Interventor": "CONSORCIO GIS RED FERREA",
+        "Fiduciaria": "",
+        "FechaInicio": "2023-08-16 00:00:00",
+        "Terminacion": 2024.0,
+        "HitosOtrosies": "",
+        "Componentes": {
+            "Ambiental": {
+                "2024-11-18 00:00:00": "En operación",
+                "2024-11-18 00:00:00.1": "Terminación de contrato de obra el 30 noviembre de 2024",
+                "2024-11-25 00:00:00": "Se remite concepto para prorrogar contrato de obra y contrato de interventoría hasta el 27 de diciembre de 2024\n* Concepto de contrato de Interventoría  20246050198903 de 25 nov 2024.\n*Concepto contrato de obra 20246050199773 de 26 nov 2024",
+                "2024-11-25 00:00:00.1": "Pendiente que contratista CSFF remita pago de vista de seguimiento al LAM6817",
+                "2024-12-06 00:00:00.1": "Pendiente que contratista CSFF remita pago de vista de seguimiento al LAM6817 - Entrando en incurrir en incumplimiento a la agencia que es la entidad titular del PMA ante la ANLA.  se ha requerido varias veces al contratista sin que a la fecha se tenga respuesta.  interventoría remitió comunicación de aviso a concesionario solicitando el pago o en caso de no pagar intereses en caso de que sean cobrados ",
+                "2024-12-27 00:00:00.1": "El 26 de diciembre de 2024, se adelanta reunión con Ecopetrol para revisar documento de coexistencia de proyectos que Ecopetrol debe radicar a la ANLA en el marco de su licenciamiento, pendiente que remitan versión final para revisión y posterior firma del documento,",
+                "2025-01-31 00:00:00": "Se envio solicitud al contratista CSFF para la individualización de actividades, impactos y medidas de manejo para el tramite de Acuerdos de coexistencia de proyectos con Ecopetrol y TGI, requeridos por ANLA en el marco del proceso de licenciamiento ambiental. Esta pendiente que el contratista envie la información.",
+                "2025-02-14 00:00:00": "Se envio solicitud al contratista CSFF para la individualización de actividades, impactos y medidas de manejo para el tramite de Acuerdos de coexistencia de proyectos con Ecopetrol y TGI, requeridos por ANLA en el marco del proceso de licenciamiento ambiental. Esta pendiente que el contratista envie la información.",
+                "2025-02-21 00:00:00": "Sin novedad",
+                "2025-02-28 00:00:00": "Sin novedad"
+            },
+            "J. Predial": {
+                "2024-11-18 00:00:00.1": "sin novedad ",
+                "2024-12-06 00:00:00.1": "sin novedad",
+                "2024-12-20 00:00:00.1": "Pendiente que contratista CSFF remita pago de vista de seguimiento al LAM6817 - Entrando en incurrir en incumplimiento a la agencia que es la entidad titular del PMA ante la ANLA.  se ha requerido varias veces al contratista sin que a la fecha se tenga respuesta.  interventoría remitió comunicación de aviso a concesionario solicitando el pago o en caso de no pagar intereses en caso de que sean cobrados "
+            },
+            "Predial": {
+                "2024-11-18 00:00:00": "No hay gestión predial.",
+                "2024-11-18 00:00:00.1": "sin alertas",
+                "2024-11-25 00:00:00": "No hay gestión predial.",
+                "2024-11-25 00:00:00.1": "sin alertas",
+                "2024-12-06 00:00:00": "No hay gestión predial.",
+                "2024-12-06 00:00:00.1": "sin alertas",
+                "2024-12-13 00:00:00": "No hay gestión predial.",
+                "2024-12-13 00:00:00.1": "sin alertas",
+                "2024-12-20 00:00:00": "No hay gestión predial.",
+                "2024-12-20 00:00:00.1": "sin alertas",
+                "2024-12-27 00:00:00": "No hay gestión predial.",
+                "2024-12-27 00:00:00.1": "sin alertas"
+            },
+            "Riesgos": {
+                "2024-11-18 00:00:00.1": "1. Apoyo en la estructuración del nuevo proceso de concesión.\n",
+                "2024-11-25 00:00:00": "Concepto y tramite de prorroga de contratos de obra e interventoría",
+                "2024-12-13 00:00:00": "1. Apoyo en la estructuración del nuevo proceso de concesión.\n2,  Contrato de operación y mantenimiento, de obra e Interventoría vencen este mes, debe prorrogarse ambos contratos y adicionar contrato de Interventoría",
+                "2024-12-20 00:00:00": "Concepto y tramite de prorroga de contratos de obra e interventoría"
+            },
+            "Social": {
+                "2024-11-25 00:00:00": "Tramite de la prorroga del contro de Obra y de interventoria para el periodo 1 de diciembre hasta el 27 de diciembre. Reunión el 26 de noviembre con la Alcaldía de San Martín - Cesar para establecer acuerdos respecto a la reubiación y reasentamiento con las comunidades alrededor de la linea ferrea en el marco de la finalización del contrato de obra e inicio de la concesión en proceso de licitación.",
+                "2024-11-25 00:00:00.1": "Tramite de la prorroga del contro de Obra y de interventoria para el periodo 1 de diciembre hasta el 27 de diciembre. Reunión el 26 de noviembre con la Alcaldía de San Martín - Cesar para establecer acuerdos respecto a la reubiación y reasentamiento con las comunidades alrededor de la linea ferrea en el marco de la finalización del contrato de obra e inicio de la concesión en proceso de licitación.",
+                "2024-12-13 00:00:00.1": "Pendiente indicaciones gerencia del proyecto para el tramite de la prorroga hasta 2025",
+                "2024-12-20 00:00:00": "En operacion",
+                "2024-12-20 00:00:00.1": "Elaboración de conceptos para el tramite de la 3 prorroga que va del 18 de diciembre 2024 hasta 31 de marzo de 2025",
+                "2025-02-21 00:00:00": "Sin Novedad "
+            }
+        }
+    },
+    "Red férrea del Atlántico": {
+        "Codigo": 501.0,
+        "Modo": "Férreo",
+        "NombreProyecto": "Red férrea del Atlántico",
+        "NumeroContrato": "O-ATLA-00-99 de 1999",
+        "Valor": "INDETERMINADO",
+        "MesAnioReferencia": "",
+        "Concesionario": "FENOCO",
+        "Interventor": "CONSORCIO RED FERREA  IJ",
+        "Fiduciaria": "Fiducia de Administración y pagos Segunda Línea y CT",
+        "FechaInicio": "2000-03-03 00:00:00",
+        "Terminacion": 2030.0,
+        "HitosOtrosies": "",
+        "Componentes": {
+            "Ambiental": {
+                "2024-11-18 00:00:00.1": "Tema ambiental pendiente: conciliación estimación costos ambientales construcción segunda Lina férrea",
+                "2024-11-25 00:00:00.1": "Tema ambiental pendiente: conciliación estimación costos ambientales construcción segunda Lina férrea",
+                "2024-12-27 00:00:00.1": "Estimación de obligaciones ambientales construcción segunda línea férrea para sustitución de obligaciones ",
+                "2025-02-28 00:00:00": "Se han revisado las propuestas del concesionario en mesas de trabajo internas de la ANI y la Interventoría  para la Sustitución de obras complementarias por la construcción de la segunda línea"
+            },
+            "J. Predial": {
+                "2024-11-18 00:00:00.1": "sin novedad ",
+                "2024-12-06 00:00:00.1": "sin novedad",
+                "2024-12-20 00:00:00.1": "Estimación de obligaciones ambientales construcción segunda línea férrea para sustitución de obligaciones "
+            },
+            "Predial": {
+                "2024-11-18 00:00:00": "No hay gestión predial.",
+                "2024-11-18 00:00:00.1": "Se esta definiendo por parte de la supervision, Fenoco e interventoria, si se realizara los tramos faltantes por segunda linea. De ser afirmativa la construccion se debe realizar gestion y adquisicion predial en dos predios (la corona y feliciana). Por definir.",
+                "2024-11-25 00:00:00": "No hay gestión predial.",
+                "2024-11-25 00:00:00.1": "Se esta definiendo por parte de la supervision, Fenoco e interventoria, si se realizara los tramos faltantes por segunda linea. De ser afirmativa la construccion se debe realizar gestion y adquisicion predial en dos predios (la corona y feliciana). Por definir.",
+                "2024-12-06 00:00:00": "No hay gestión predial.",
+                "2024-12-06 00:00:00.1": "Se esta definiendo por parte de la supervision, Fenoco e interventoria, si se realizara los tramos faltantes por segunda linea. De ser afirmativa la construccion se debe realizar gestion y adquisicion predial en dos predios (la corona y feliciana). Por definir.",
+                "2024-12-13 00:00:00": "No hay gestión predial.",
+                "2024-12-13 00:00:00.1": "Se esta definiendo por parte de la supervision, Fenoco e interventoria, si se realizara los tramos faltantes por segunda linea. De ser afirmativa la construccion se debe realizar gestion y adquisicion predial en dos predios (la corona y feliciana). Por definir.",
+                "2024-12-20 00:00:00": "No hay gestión predial.",
+                "2024-12-20 00:00:00.1": "Se esta definiendo por parte de la supervision, Fenoco e interventoria, si se realizara los tramos faltantes por segunda linea. De ser afirmativa la construccion se debe realizar gestion y adquisicion predial en dos predios (la corona y feliciana). Por definir.",
+                "2024-12-27 00:00:00": "No hay gestión predial.",
+                "2024-12-27 00:00:00.1": "Se esta definiendo por parte de la supervision, Fenoco e interventoria, si se realizara los tramos faltantes por segunda linea. De ser afirmativa la construccion se debe realizar gestion y adquisicion predial en dos predios (la corona y feliciana). Por definir."
+            },
+            "Riesgos": {
+                "2024-11-18 00:00:00.1": "1. Concepto de modificación de contrato, por no construcción de 25 km de la segunda calzada del corredor Chiriguana Santa Marta, discusión por obras de licenciamiento ambiental que no se ejecutarán.",
+                "2024-12-13 00:00:00": "1. Concepto de modificación de contrato, por no construcción de 25 km de la segunda calzada del corredor Chiriguana Santa Marta, discusión por obras de licenciamiento ambiental que no se ejecutarán.",
+                "2024-12-20 00:00:00": "1. Concepto de modificación de contrato, por no construcción de 25 km de la segunda calzada del corredor Chiriguana Santa Marta, discusión por obras de licenciamiento ambiental que no se ejecutarán."
+            },
+            "Social": {
+                "2024-12-13 00:00:00": "Acompañamiento a la Mesa de trabajo segunda Línea Férrea del Atlántico , especificamente la revisión de los costos sociales y ambientales",
+                "2024-12-13 00:00:00.1": "Pendientes revisión de los costos propuestos por FENOCO para consultas previas",
+                "2024-12-20 00:00:00": "En operación",
+                "2024-12-20 00:00:00.1": "Revisión por parte de FENOCO de Propuesta segunda linea",
+                "2025-02-21 00:00:00": "Sin Novedad "
+            }
+        }
+    },
+    "Red Férrea del Pacífico": {
+        "Codigo": 501.0,
+        "Modo": "Férreo",
+        "NombreProyecto": "Red Férrea del Pacífico",
+        "NumeroContrato": "PAF-ANIFERREO-O-084-2024",
+        "Valor": " $     36.209.801.136,00",
+        "MesAnioReferencia": "2024-11-07 00:00:00",
+        "Concesionario": "INFRAESTRUCTURA NACIONAL LTDA",
+        "Interventor": "CONSORCIO INTERVENTOR FERREO BC 70 ",
+        "Fiduciaria": "PATRIMONIO AUTONOMO FINDETER",
+        "FechaInicio": "2024-11-07 00:00:00",
+        "Terminacion": 2026.0,
+        "HitosOtrosies": "",
+        "Componentes": {
+            "Ambiental": {
+                "2024-11-18 00:00:00": "Inicio ejecución de contrato de obra pública a través de FINDETER",
+                "2024-11-18 00:00:00.1": "inicio de mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3709",
+                "2024-11-25 00:00:00": "Inicio ejecución de contrato de obra pública a través de FINDETER",
+                "2024-11-25 00:00:00.1": "inicio de mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3709",
+                "2024-12-06 00:00:00.1": "inicio de mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3710",
+                "2024-12-27 00:00:00.1": "Pendiente reiniciar en enero de 2024 las mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3710",
+                "2025-01-31 00:00:00": "Pendiente reiniciar en enero de 2025 las mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3715. Se realizó reunión con la Gerencia Ferrea de la VGCON, y de la Vicepresidencia de Estructuración sobre el estado del licenciamiento ambiental del corredor.",
+                "2025-02-14 00:00:00": "Pendiente reiniciar en enero de 2025 las mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3715. Se realizó reunión con la Gerencia Ferrea de la VGCON, y de la Vicepresidencia de Estructuración sobre el estado del licenciamiento ambiental del corredor.",
+                "2025-02-21 00:00:00": "Sin novedad",
+                "2025-02-28 00:00:00": "Sin novedad"
+            },
+            "J. Predial": {
+                "2024-11-18 00:00:00.1": "sin novedad ",
+                "2024-12-06 00:00:00.1": "sin novedad",
+                "2024-12-20 00:00:00.1": "inicio de mesas de trabajo con ANLA, FINDETER, Contratista de obra e Interventoría para el saneamiento de los expedientes LAM5348, LAM2939 y LAM3710"
+            },
+            "Predial": {
+                "2024-11-18 00:00:00": "PREDIOS REQUERIDOS: 13\nPREDIOS CON OFERTA INSCRITA: 13 (100%)\nPREDIOS ADQUIRIDOS: 10 (77%)\nLONGITUD REQUERIDA: 12,474 Km\nLONGITUD DISPONIBLE: 12,474 Km (100%)",
+                "2024-11-18 00:00:00.1": "Liquidación judicial, actualmente se esá en la validación de los predios de la Variante Cartago.",
+                "2024-11-25 00:00:00": "PREDIOS REQUERIDOS: 13\n PREDIOS CON OFERTA INSCRITA: 13 (100%)\n PREDIOS ADQUIRIDOS: 10 (77%)\nLONGITUD REQUERIDA: 12,474 Km\nLONGITUD DISPONIBLE: 12,474 Km (100%)",
+                "2024-11-25 00:00:00.1": "sin alertas",
+                "2024-12-06 00:00:00": "PREDIOS REQUERIDOS: 13\n PREDIOS CON OFERTA INSCRITA: 13 (100%)\n PREDIOS ADQUIRIDOS: 10 (77%)\nLONGITUD REQUERIDA: 12,474 Km\nLONGITUD DISPONIBLE: 12,474 Km (100%)",
+                "2024-12-06 00:00:00.1": "sin alertas",
+                "2024-12-13 00:00:00": "PREDIOS REQUERIDOS: 13\n PREDIOS CON OFERTA INSCRITA: 13 (100%)\n PREDIOS ADQUIRIDOS: 10 (77%)\nLONGITUD REQUERIDA: 12,474 Km\nLONGITUD DISPONIBLE: 12,474 Km (100%)",
+                "2024-12-13 00:00:00.1": "sin alertas",
+                "2024-12-20 00:00:00": "PREDIOS REQUERIDOS: 13\n PREDIOS CON OFERTA INSCRITA: 13 (100%)\n PREDIOS ADQUIRIDOS: 10 (77%)\nLONGITUD REQUERIDA: 12,474 Km\nLONGITUD DISPONIBLE: 12,474 Km (100%)",
+                "2024-12-20 00:00:00.1": "sin alertas",
+                "2024-12-27 00:00:00": "PREDIOS REQUERIDOS: 13\n PREDIOS CON OFERTA INSCRITA: 13 (100%)\n PREDIOS ADQUIRIDOS: 10 (77%)\nLONGITUD REQUERIDA: 12,474 Km\nLONGITUD DISPONIBLE: 12,474 Km (100%)",
+                "2024-12-27 00:00:00.1": "sin alertas"
+            },
+            "Riesgos": {
+                "2024-11-18 00:00:00.1": "1. Liquidación judicial de los contrato de concesión. ",
+                "2024-12-13 00:00:00": "1. Liquidación judicial de los contrato de concesión. \n2, Suscripción de convenio con Metro de Medellin para reparación de locomotoras.",
+                "2024-12-20 00:00:00": "1. Liquidación judicial de los contrato de concesión. "
+            },
+            "Social": {
+                "2024-12-13 00:00:00": "En proceso de definicion de los componentes que debe incluir los informes de seguimiento",
+                "2024-12-13 00:00:00.1": "Seguimiento a la liquidación judicial del contrato RFP ",
+                "2024-12-20 00:00:00": "En lkiquidación judicial / estructuracion nuevo proyecto",
+                "2024-12-20 00:00:00.1": "Seguimiento a los requerimientos que tenga el equipo estructurador respecto a los temas de consultas previas",
+                "2025-02-21 00:00:00": "Sin Novedad "
+            }
+        }
+    },
+    "nan": {
+        "Codigo": "",
+        "Modo": "",
+        "NombreProyecto": "nan",
+        "NumeroContrato": "",
+        "Valor": "",
+        "MesAnioReferencia": "",
+        "Concesionario": "",
+        "Interventor": "",
+        "Fiduciaria": "",
+        "FechaInicio": "NaT",
+        "Terminacion": "",
+        "HitosOtrosies": "",
+        "Componentes": {
+            "Total": {
+                "2024-11-18 00:00:00": 20,
+                "2024-11-18 00:00:00.1": 16,
+                "2024-11-25 00:00:00.1": 9,
+                "2024-12-06 00:00:00.1": 11
+            },
+            "Social": {
+                "2024-11-18 00:00:00.1": 4,
+                "2024-11-25 00:00:00.1": 4,
+                "2024-12-06 00:00:00.1": 3
+            },
+            "Predial": {
+                "2024-11-18 00:00:00.1": 4,
+                "2024-11-25 00:00:00.1": 0,
+                "2024-12-06 00:00:00.1": 4
+            },
+            "J. Predial": {
+                "2024-11-18 00:00:00.1": 4,
+                "2024-11-25 00:00:00.1": 4,
+                "2024-12-06 00:00:00.1": 4
+            },
+            "Riesgos": {
+                "2024-11-18 00:00:00.1": 4,
+                "2024-11-25 00:00:00.1": 0,
+                "2024-12-06 00:00:00.1": 0
+            },
+            "Ambiental": {
+                "2024-11-18 00:00:00.1": 0,
+                "2024-11-25 00:00:00.1": 1,
+                "2024-12-06 00:00:00.1": 0
+            }
+        }
+    }
+}
