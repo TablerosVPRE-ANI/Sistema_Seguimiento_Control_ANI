@@ -53,9 +53,36 @@
         .modal-actions button { padding: 10px 20px; border-radius: 8px; border: none; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background: #667eea; color: white; }
         .btn-secondary { background: #e1e8ed; color: #495057; }
+        .back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 12px 20px;
+    background: white;
+    color: #667eea;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    background: #f8f9fa;
+}
     </style>
 </head>
 <body>
+    <!-- Botón de regreso flotante -->
+<a href="index.html" class="back-button" title="Volver al inicio">
+    ← Inicio
+</a>
     <div class="container">
         <div class="header">
             <h1>🚂 Dashboard de Proyectos Ferroviarios</h1>
