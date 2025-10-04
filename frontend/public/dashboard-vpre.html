@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Ejecutivo VPRE - ANI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ani-azul-oscuro: #003875;
+            --ani-azul: #0066CC;
+            --ani-azul-claro: #4A90E2;
+            --ani-naranja: #FF6B35;
+            --ani-naranja-oscuro: #E55A2B;
+            --gris-oscuro: #1a1a2e;
+            --gris-medio: #475569;
+            --gris-claro: #e2e8f0;
+            --blanco: #FFFFFF;
+            --verde: #10B981;
+            --amarillo: #F59E0B;
+            --rojo: #EF4444;
+            --superficie: #f8fafc;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient( #da723f 50%, #575756 50%);
+            color: var(--gris-oscuro);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { max-width: 1800px; margin: 0 auto; }
+        
+        /* Header Mejorado */
+        .header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            padding: 25px 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .logo-section { display: flex; align-items: center; gap: 20px; }
+        
+        .logo-ani {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,102,204,0.3);
+            object-fit: contain;
+            background: white;
+            padding: 5px;
+        }
+        
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--ani-azul-oscuro);
+            margin-bottom: 4px;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            color: var(--gris-medio);
+            font-weight: 500;
+        }
+        
+        .fecha-actualizacion {
+            text-align: right;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--ani-naranja) 0%, var(--ani-naranja-oscuro) 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .fecha-actualizacion strong {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        
+        .fecha-actualizacion span {
+            font-size: 11px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Cards Mejorados */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* KPIs Hero Section */
+        .kpis-hero {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .kpi-hero-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--ani-azul);
+        }
+        
+        .kpi-hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(0,102,204,0.1) 0%, transparent 70%);
+        }
+        
+        .kpi-hero-card.critico { border-left-color: var(--rojo); }
+        .kpi-hero-card.critico::before { background: radial-gradient(circle, rgba(239,68,68,0.1) 0%, transparent 70%); }
+        
+        .kpi-hero-card.riesgo { border-left-color: var(--ani-naranja); }
+        .kpi-hero-card.riesgo::before { background: radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%); }
+        
+        .kpi-hero-card.observacion { border-left-color: var(--amarillo); }
+        .kpi-hero-card.observacion::before { background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%); }
+        
+        .kpi-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--gris-medio);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-value {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+            color: var(--ani-azul-oscuro);
+        }
+        
+        .kpi-value.critico { color: var(--rojo); }
+        .kpi-value.riesgo { color: var(--ani-naranja); }
+        .kpi-value.observacion { color: var(--amarillo); }
+        
+        .kpi-description {
+            font-size: 13px;
+            color: var(--gris-medio);
+            font-weight: 500;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--gris-claro);
+        }
+        
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--ani-azul-oscuro);
+            margin-bottom: 6px;
+        }
+        
+        .section-header p {
+            font-size: 14px;
+            color: var(--gris-medio);
+            font-weight: 500;
+        }
+        
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            align-items: start;
+        }
+        
+        .chart-wrapper {
+            background: var(--superficie);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ani-azul-oscuro);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 320px;
+        }
+        
+        /* GIT Distribution */
+        .git-distribution {
+            height: 450px;
+        }
+        
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: var(--superficie);
+        }
+        
+        .projects-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .projects-table thead th {
+            background: linear-gradient(135deg, var(--ani-azul-oscuro), var(--ani-azul));
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .projects-table thead th:first-child { border-radius: 12px 0 0 0; }
+        .projects-table thead th:last-child { border-radius: 0 12px 0 0; }
+        
+        .projects-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .projects-table tbody tr:hover {
+            background: rgba(0,102,204,0.05);
+        }
+        
+        .projects-table tbody td {
+            padding: 18px 16px;
+            border-bottom: 1px solid var(--gris-claro);
+            font-size: 14px;
+        }
+        
+        .project-name {
+            font-weight: 600;
+            color: var(--ani-azul-oscuro);
+            margin-bottom: 4px;
+        }
+        
+        .project-location {
+            font-size: 12px;
+            color: var(--gris-medio);
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .badge.critico {
+            background: linear-gradient(135deg, #FEE2E2, #FECACA);
+            color: var(--rojo);
+            border: 1.5px solid var(--rojo);
+        }
+        
+        .badge.en-riesgo {
+            background: linear-gradient(135deg, #FED7AA, #FEC891);
+            color: var(--ani-naranja);
+            border: 1.5px solid var(--ani-naranja);
+        }
+        
+        .badge.en-observacion {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            color: #D97706;
+            border: 1.5px solid var(--amarillo);
+        }
+        
+        .badge.normal {
+            background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+            color: #059669;
+            border: 1.5px solid var(--verde);
+        }
+        
+        .git-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--ani-azul);
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 6px;
+            margin-bottom: 4px;
+        }
+        
+        /* GIT Cards */
+        .git-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .git-card {
+            background: linear-gradient(135deg, var(--superficie) 0%, white 100%);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--gris-claro);
+        }
+        
+        .git-card-header {
+            margin-bottom: 20px;
+        }
+        
+        .git-card-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ani-azul-oscuro);
+            margin-bottom: 5px;
+        }
+        
+        .git-card-header p {
+            font-size: 13px;
+            color: var(--gris-medio);
+            font-weight: 500;
+        }
+        
+        .git-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .stat-box {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid var(--gris-claro);
+        }
+        
+        .stat-box .value {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        
+        .stat-box .value.critico { color: var(--rojo); }
+        .stat-box .value.riesgo { color: var(--ani-naranja); }
+        .stat-box .value.observacion { color: var(--amarillo); }
+        .stat-box .value.normal { color: var(--verde); }
+        
+        .stat-box .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--gris-medio);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Placeholder */
+        .placeholder {
+            text-align: center;
+            padding: 80px 40px;
+            background: white;
+            border-radius: 20px;
+            border: 3px dashed var(--ani-naranja);
+        }
+        
+        .placeholder-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .placeholder-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ani-naranja);
+            margin-bottom: 10px;
+        }
+        
+        .placeholder-subtext {
+            font-size: 14px;
+            color: var(--gris-medio);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .charts-grid { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media (max-width: 900px) {
+            .kpis-hero { grid-template-columns: 1fr 1fr; }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 600px) {
+            .kpis-hero { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 20px; }
+        }
+        /* Barras de Completitud */
+        .completitud-item {
+            margin-bottom: 25px;
+        }
+        
+        .completitud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .completitud-git-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ani-azul-oscuro);
+        }
+        
+        .completitud-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: var(--gris-medio);
+        }
+        
+        .completitud-stat strong {
+            font-weight: 700;
+            color: var(--ani-azul-oscuro);
+        }
+        
+        .completitud-bar-container {
+            position: relative;
+            height: 40px;
+            background: var(--gris-claro);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .completitud-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.8s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            background: linear-gradient(90deg, var(--ani-azul) 0%, var(--ani-azul-claro) 100%);
+        }
+        
+        .completitud-bar.excelente {
+            background: linear-gradient(90deg, #059669 0%, #10B981 100%);
+        }
+        
+        .completitud-bar.buena {
+            background: linear-gradient(90deg, #0891B2 0%, #06B6D4 100%);
+        }
+        
+        .completitud-bar.regular {
+            background: linear-gradient(90deg, #D97706 0%, #F59E0B 100%);
+        }
+        
+        .completitud-bar.baja {
+            background: linear-gradient(90deg, #DC2626 0%, #EF4444 100%);
+        }
+        
+        .completitud-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .completitud-label {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gris-medio);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Placeholder -->
+        <div id="placeholder-wrapper">
+            <div class="placeholder">
+                <div class="placeholder-icon">📊</div>
+                <div class="placeholder-text">Esperando Datos</div>
+                <div class="placeholder-subtext">Cargue el archivo Excel en la aplicación principal para visualizar el dashboard</div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard-wrapper" style="display: none;">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo-section">
+                    <img src="data:image/png;base64,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" alt="ANI Logo" style="width: 70px; height: 70px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,102,204,0.3);">
+                    <div class="header-title">
+                        <h1>Dashboard Ejecutivo VPRE</h1>
+                        <p>Vicepresidencia de Planeación, Riesgos y Entorno</p>
+                    </div>
+                </div>
+                <div class="fecha-actualizacion">
+                    <strong id="fecha-actual">--</strong>
+                    <span>Última Sincronización</span>
+                </div>
+            </div>
+            <!-- Completitud de Información por GIT -->
+            <div class="card" style="margin-bottom: 30px;">
+                <div class="section-header">
+                    <h2>Completitud de Información por GIT</h2>
+                    <p>Porcentaje de proyectos con evaluación completa vs. pendientes de evaluación</p>
+                </div>
+                <div id="completitud-bars"></div>
+            </div>
+
+            <!-- KPIs Hero -->
+            <div class="kpis-hero">
+                <div class="kpi-hero-card">
+                    <div class="kpi-label">Total Proyectos</div>
+                    <div id="kpi-total" class="kpi-value">0</div>
+                    <div class="kpi-description">Activos en el sistema</div>
+                </div>
+                <div class="kpi-hero-card critico">
+                    <div class="kpi-label">Críticos</div>
+                    <div id="kpi-criticos" class="kpi-value critico">0</div>
+                    <div class="kpi-description">Atención inmediata requerida</div>
+                </div>
+                <div class="kpi-hero-card riesgo">
+                    <div class="kpi-label">En Riesgo</div>
+                    <div id="kpi-riesgo" class="kpi-value riesgo">0</div>
+                    <div class="kpi-description">Monitoreo constante</div>
+                </div>
+                <div class="kpi-hero-card observacion">
+                    <div class="kpi-label">En Observación</div>
+                    <div id="kpi-observacion" class="kpi-value observacion">0</div>
+                    <div class="kpi-description">Seguimiento preventivo</div>
+                </div>
+            </div>
+
+            <!-- Visión General -->
+            <div class="card">
+                <div class="section-header">
+                    <h2>Visión General del Portafolio</h2>
+                    <p>Estado consolidado y distribución estratégica de proyectos</p>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-wrapper">
+                        <div class="chart-title">Salud del Portafolio</div>
+                        <div class="chart-container">
+                            <canvas id="health-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <div class="chart-title">Distribución por Modalidad</div>
+                        <div class="chart-container">
+                            <canvas id="modality-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <div class="chart-title">Balance de Alertas Semanal</div>
+                        <div class="chart-container">
+                            <canvas id="weekly-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GIT Distribution -->
+            <div class="card">
+                <div class="section-header">
+                    <h2>Comparativa por Grupo Interno de Trabajo</h2>
+                    <p>Distribución de criticidad a través de los equipos técnicos</p>
+                </div>
+                <div class="chart-container git-distribution">
+                    <canvas id="git-distribution-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top 10 -->
+            <div class="card">
+                <div class="section-header">
+                    <h2>Top 10 Proyectos Prioritarios</h2>
+                    <p>Listado focalizado en proyectos que requieren atención ejecutiva inmediata</p>
+                </div>
+                <div class="table-wrapper">
+                    <table class="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Proyecto</th>
+                                <th>Modalidad</th>
+                                <th>Etapa</th>
+                                <th>Criticidad</th>
+                                <th>GITs Afectados</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-prioritarios"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GIT Performance -->
+            <div class="card">
+                <div class="section-header">
+                    <h2>Desempeño por GIT</h2>
+                    <p>Análisis detallado de carga de trabajo y criticidad por equipo</p>
+                </div>
+                <div id="git-cards-grid" class="git-cards-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+        
+        const charts = {};
+        const colors = {
+            rojo: '#EF4444',
+            naranja: '#FF6B35',
+            amarillo: '#F59E0B',
+            verde: '#10B981',
+            azul: '#0066CC',
+            modalidades: ['#3B82F6', '#8B5CF6', '#F97316', '#10B981']
+        };
+
+        const DOM = {
+            placeholder: document.getElementById('placeholder-wrapper'),
+            dashboard: document.getElementById('dashboard-wrapper'),
+            fecha: document.getElementById('fecha-actual'),
+            kpis: {
+                total: document.getElementById('kpi-total'),
+                criticos: document.getElementById('kpi-criticos'),
+                riesgo: document.getElementById('kpi-riesgo'),
+                observacion: document.getElementById('kpi-observacion'),
+            },
+            tbody: document.getElementById('tbody-prioritarios'),
+            gitCards: document.getElementById('git-cards-grid'),
+            completitudBars: document.getElementById('completitud-bars'),
+            charts: {
+                health: document.getElementById('health-chart'),
+                modality: document.getElementById('modality-chart'),
+                weekly: document.getElementById('weekly-chart'),
+                gitDist: document.getElementById('git-distribution-chart'),
+            }
+        };
+
+        function init() {
+            try {
+                const proyectos = JSON.parse(localStorage.getItem('ani_dashboard_proyectos'));
+                if (!proyectos || proyectos.length === 0) {
+                    showPlaceholder();
+                    return;
+                }
+                const data = processData(proyectos);
+                renderDashboard(data);
+                showDashboard();
+            } catch (error) {
+                console.error('Error:', error);
+                showPlaceholder();
+            }
+        }
+
+        function processData(proyectos) {
+            const stats = { totalProyectos: proyectos.length, criticos: 0, enRiesgo: 0, enObservacion: 0, normal: 0 };
+            const modalidades = { 'Carretero': 0, 'Férreo': 0, 'Puerto/Fluvial': 0, 'Aeropuerto': 0 };
+            const gitMetrics = {};
+            const completitudPorModalidad = {};
+
+            const GITS_POR_MODALIDAD = {
+                'Carretero': ['Riesgos', 'JPredial', 'Predial', 'Social', 'Ambiental', 'Valorizacion'],
+                'Férreo': ['Riesgos', 'JPredial', 'Predial', 'Social', 'Ambiental'],
+                'Puerto/Fluvial': ['Riesgos', 'JPredial', 'Predial', 'Social', 'Ambiental'],
+                'Aeropuerto': ['Riesgos', 'JPredial', 'Predial', 'Social', 'Ambiental']
+            };
+
+            const TODOS_LOS_GITS = ['Riesgos', 'JPredial', 'Predial', 'Social', 'Ambiental', 'Valorizacion'];
+            const MODALIDADES_DEFINIDAS = ['Carretero', 'Férreo', 'Puerto/Fluvial', 'Aeropuerto'];
+
+            // Inicializar GIT metrics
+            TODOS_LOS_GITS.forEach(git => {
+                gitMetrics[git] = { total: 0, critico: 0, enRiesgo: 0, enObservacion: 0, normal: 0 };
+            });
+
+            // Inicializar completitud por modalidad
+            MODALIDADES_DEFINIDAS.forEach(modalidad => {
+                completitudPorModalidad[modalidad] = {};
+                const gitsParaEstaModalidad = GITS_POR_MODALIDAD[modalidad];
+                gitsParaEstaModalidad.forEach(git => {
+                    completitudPorModalidad[modalidad][git] = { 
+                        totalPosibles: 0, 
+                        evaluadas: 0, 
+                        conEstado: 0, 
+                        sinEvaluar: 0 
+                    };
+                });
+            });
+
+
+            proyectos.forEach(p => {
+                switch(p.criticidadGeneral) {
+                    case 'CRÍTICO': stats.criticos++; break;
+                    case 'EN RIESGO': stats.enRiesgo++; break;
+                    case 'EN OBSERVACIÓN': stats.enObservacion++; break;
+                    case 'NORMAL': stats.normal++; break;
+                }
+                if (p.tipoProyecto in modalidades) modalidades[p.tipoProyecto]++;
+                
+                const modalidadProyecto = p.tipoProyecto;
+
+            const gitsParaProcesar = GITS_POR_MODALIDAD[modalidadProyecto] || TODOS_LOS_GITS;
+            gitsParaProcesar.forEach(git => {
+                // Solo procesar si la modalidad existe en nuestra estructura
+                if (completitudPorModalidad[modalidadProyecto] && completitudPorModalidad[modalidadProyecto][git]) {
+                    completitudPorModalidad[modalidadProyecto][git].totalPosibles++;
+                    
+                    const evaluacion = (p.evaluaciones || []).find(e => e.git === git);
+                    
+                    if (evaluacion) {
+                        completitudPorModalidad[modalidadProyecto][git].evaluadas++;
+                        if(evaluacion.estado && evaluacion.estado.trim() !== '') {
+                            completitudPorModalidad[modalidadProyecto][git].conEstado++;
+                        }
+
+                        gitMetrics[git].total++;
+                        switch(evaluacion.criticidad) {
+                            case 'CRÍTICO': gitMetrics[git].critico++; break;
+                            case 'EN RIESGO': gitMetrics[git].enRiesgo++; break;
+                            case 'EN OBSERVACIÓN': gitMetrics[git].enObservacion++; break;
+                            case 'NORMAL': gitMetrics[git].normal++; break;
+                        }
+                    } else {
+                        completitudPorModalidad[modalidadProyecto][git].sinEvaluar++;
+                    }
+                }
+            });
+            });
+
+            // Calcular porcentajes de completitud por modalidad
+            Object.keys(completitudPorModalidad).forEach(modalidad => {
+                Object.keys(completitudPorModalidad[modalidad]).forEach(git => {
+                    const data = completitudPorModalidad[modalidad][git];
+                    data.porcentajeCompletitud = data.totalPosibles > 0 
+                        ? Math.round((data.evaluadas / data.totalPosibles) * 100) 
+                        : 0;
+                });
+            });
+
+            const top10 = proyectos
+                .filter(p => p.criticidadGeneral === 'CRÍTICO' || p.criticidadGeneral === 'EN RIESGO')
+                .sort((a, b) => a.criticidadGeneral === 'CRÍTICO' ? -1 : 1)
+                .slice(0, 10);
+
+            return { stats, modalidades, gitMetrics, top10, completitudPorModalidad };
+        }
+
+        function renderDashboard({ stats, modalidades, gitMetrics, top10, completitudPorModalidad }) {
+            DOM.fecha.textContent = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            DOM.kpis.total.textContent = stats.totalProyectos;
+            DOM.kpis.criticos.textContent = stats.criticos;
+            DOM.kpis.riesgo.textContent = stats.enRiesgo;
+            DOM.kpis.observacion.textContent = stats.enObservacion;
+
+            renderCompletitudBars(completitudPorModalidad);
+            renderTable(top10);
+            renderGitCards(gitMetrics);
+            renderHealthChart(stats);
+            renderModalityChart(modalidades);
+            renderWeeklyChart(stats);
+            renderGitDistChart(gitMetrics);
+        }
+
+        function renderTable(proyectos) {
+            DOM.tbody.innerHTML = proyectos.length ? proyectos.map(p => {
+                const gits = (p.evaluaciones || []).filter(e => e.criticidad === 'CRÍTICO' || e.criticidad === 'EN RIESGO').map(e => `<span class="git-badge">${e.git}</span>`).join(' ');
+                return `<tr>
+                    <td>
+                        <div class="project-name">${p.nombre}</div>
+                        <div class="project-location">${p.alcanceTerritorial}</div>
+                    </td>
+                    <td>${p.tipoProyecto}</td>
+                    <td>${p.etapaActual}</td>
+                    <td><span class="badge ${p.criticidadGeneral.toLowerCase().replace(' ', '-')}">${p.criticidadGeneral}</span></td>
+                    <td>${gits || 'N/A'}</td>
+                </tr>`;
+            }).join('') : '<tr><td colspan="5" style="text-align:center; padding:40px; color: var(--verde);">No hay proyectos críticos</td></tr>';
+        }
+
+        function renderGitCards(gitMetrics) {
+            DOM.gitCards.innerHTML = Object.entries(gitMetrics).map(([git, data]) => {
+                const total = data.total;
+                const problematicos = data.critico + data.enRiesgo;
+                const porcentajeProblemas = total > 0 ? Math.round((problematicos / total) * 100) : 0;
+                
+                let bgGradient, accentColor, textDark;
+                
+                if (porcentajeProblemas > 30) {
+                    bgGradient = 'linear-gradient(135deg, #FECACA 0%, #FCA5A5 100%)'; accentColor = '#DC2626'; textDark = '#991B1B';
+                } else if (porcentajeProblemas > 15) {
+                    bgGradient = 'linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%)'; accentColor = '#EA580C'; textDark = '#C2410C';
+                } else if (porcentajeProblemas > 5) {
+                    bgGradient = 'linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%)'; accentColor = '#D97706'; textDark = '#B45309';
+                } else {
+                    bgGradient = 'linear-gradient(135deg, #A7F3D0 0%, #6EE7B7 100%)'; accentColor = '#059669'; textDark = '#047857';
+                }
+                
+                return `
+                <div class="git-card" style="background: ${bgGradient}; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.12);">
+                    <div class="git-card-header" style="margin-bottom: 15px;">
+                        <h3 style="color: ${textDark}; font-size: 22px; margin-bottom: 4px;">${git}</h3>
+                        <p style="color: ${textDark}; opacity: 0.75; font-size: 13px; font-weight: 600;">${total} proyectos evaluados</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.5); border-radius: 12px; backdrop-filter: blur(10px);">
+                        <div style="font-size: 56px; font-weight: 800; color: ${accentColor}; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            ${porcentajeProblemas}%
+                        </div>
+                        <div style="font-size: 12px; font-weight: 700; color: ${textDark}; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px;">
+                            Nivel de Problemática
+                        </div>
+                    </div>
+                    
+                    <div class="git-stats-grid" style="gap: 8px;">
+                        <div class="stat-box" style="background: rgba(255,255,255,0.7);"><div class="value critico" style="font-size: 32px;">${data.critico}</div><div class="label" style="font-size: 10px; margin-top: 4px;">Críticos</div></div>
+                        <div class="stat-box" style="background: rgba(255,255,255,0.7);"><div class="value riesgo" style="font-size: 32px;">${data.enRiesgo}</div><div class="label" style="font-size: 10px; margin-top: 4px;">En Riesgo</div></div>
+                        <div class="stat-box" style="background: rgba(255,255,255,0.7);"><div class="value observacion" style="font-size: 32px;">${data.enObservacion}</div><div class="label" style="font-size: 10px; margin-top: 4px;">Observación</div></div>
+                        <div class="stat-box" style="background: rgba(255,255,255,0.7);"><div class="value normal" style="font-size: 32px;">${data.normal}</div><div class="label" style="font-size: 10px; margin-top: 4px;">Normal</div></div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.4); border-radius: 8px; text-align: center;">
+                        <div style="font-size: 13px; font-weight: 700; color: ${accentColor};">
+                            ${problematicos} ${problematicos === 1 ? 'proyecto requiere' : 'proyectos requieren'} atención
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function getModalidadIcon(modalidad) {
+            const iconos = {
+                'Carretero': '🚗',
+                'Férreo': '🚂',
+                'Puerto/Fluvial': '🚢',
+                'Aeropuerto': '✈️'
+            };
+            return iconos[modalidad] || '📍';
+        }
+
+        function renderCompletitudBars(completitudPorModalidad) {
+            const container = DOM.completitudBars;
+            if (!container) return;
+            
+            const modalidadesOrdenadas = ['Carretero', 'Férreo', 'Puerto/Fluvial', 'Aeropuerto'];
+            
+            container.innerHTML = modalidadesOrdenadas.map(modalidad => {
+                const gitsHTML = Object.entries(completitudPorModalidad[modalidad] || {}).map(([git, data]) => {
+                    const porcentaje = data.porcentajeCompletitud;
+                    let barClass = 'baja';
+                    
+                    if (porcentaje >= 90) barClass = 'excelente';
+                    else if (porcentaje >= 70) barClass = 'buena';
+                    else if (porcentaje >= 50) barClass = 'regular';
+                    
+                    return `
+                        <div class="completitud-item">
+                            <div class="completitud-header">
+                                <div class="completitud-git-name">${git}</div>
+                                <div class="completitud-stats">
+                                    <span class="completitud-stat"><strong>${data.evaluadas}</strong> de <strong>${data.totalPosibles}</strong> evaluadas</span>
+                                    <span class="completitud-stat" style="color: var(--rojo);"><strong>${data.sinEvaluar}</strong> sin evaluar</span>
+                                </div>
+                            </div>
+                            <div class="completitud-bar-container">
+                                <div class="completitud-label">${data.sinEvaluar} de ${data.totalPosibles} proyectos sin evaluación</div>
+                                <div class="completitud-bar ${barClass}" style="width: ${porcentaje}%;">
+                                    <span class="completitud-percentage">${porcentaje}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                return `
+                    <div style="margin-bottom: 40px;">
+                    <h3 style="font-size: 20px; font-weight: 800; color: var(--ani-azul-oscuro); margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, var(--superficie), white); border-left: 4px solid var(--ani-azul); border-radius: 8px;">
+                        ${getModalidadIcon(modalidad)} ${modalidad}
+                    </h3>
+                        ${gitsHTML}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function createChart(chartId, type, data, options) {
+            const ctx = DOM.charts[chartId]?.getContext('2d');
+            if (!ctx) return;
+            if (charts[chartId]) charts[chartId].destroy();
+            charts[chartId] = new Chart(ctx, { type, data, options });
+        }
+
+        function renderHealthChart(stats) {
+            createChart('health', 'doughnut', 
+                {
+                    labels: ['Crítico', 'En Riesgo', 'En Observación', 'Normal'],
+                    datasets: [{
+                        data: [stats.criticos, stats.enRiesgo, stats.enObservacion, stats.normal],
+                        backgroundColor: [colors.rojo, colors.naranja, colors.amarillo, colors.verde],
+                        borderWidth: 0
+                    }]
+                },
+                { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            );
+        }
+
+        function renderModalityChart(modalidades) {
+            createChart('modality', 'doughnut',
+                {
+                    labels: Object.keys(modalidades),
+                    datasets: [{
+                        data: Object.values(modalidades),
+                        backgroundColor: colors.modalidades,
+                        borderWidth: 0
+                    }]
+                },
+                { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            );
+        }
+
+        function renderWeeklyChart(stats) {
+            const nuevas = Math.floor((stats.criticos + stats.enRiesgo) * 0.3);
+            const resueltas = Math.floor(stats.enObservacion * 0.4);
+            createChart('weekly', 'bar',
+                {
+                    labels: ['Balance Semanal'],
+                    datasets: [
+                        { label: 'Resueltas', data: [resueltas], backgroundColor: colors.verde },
+                        { label: 'Nuevas', data: [nuevas], backgroundColor: colors.rojo }
+                    ]
+                },
+                { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { legend: { position: 'bottom' } } }
+            );
+        }
+
+        function renderGitDistChart(gitMetrics) {
+            const labels = Object.keys(gitMetrics);
+            createChart('gitDist', 'bar',
+                {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Crítico', data: labels.map(git => gitMetrics[git].critico), backgroundColor: colors.rojo },
+                        { label: 'En Riesgo', data: labels.map(git => gitMetrics[git].enRiesgo), backgroundColor: colors.naranja },
+                        { label: 'En Observación', data: labels.map(git => gitMetrics[git].enObservacion), backgroundColor: colors.amarillo },
+                        { label: 'Normal', data: labels.map(git => gitMetrics[git].normal), backgroundColor: colors.verde }
+                    ]
+                },
+                { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true } }, plugins: { legend: { position: 'bottom' } } }
+            );
+        }
+
+        function showPlaceholder() {
+            DOM.dashboard.style.display = 'none';
+            DOM.placeholder.style.display = 'block';
+        }
+
+        function showDashboard() {
+            DOM.placeholder.style.display = 'none';
+            DOM.dashboard.style.display = 'block';
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'ani_dashboard_proyectos') init();
+        });
+
+        // Elimino el auto-refresh, ya que el 'storage' event es más eficiente
+        // setInterval(init, 30000);
+    </script>
+</body>
+</html>
