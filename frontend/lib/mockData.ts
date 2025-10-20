@@ -11,7 +11,8 @@ export const mockProyectos: Proyecto[] = [
     alcanceTerritorial: 'Andina Central',
     generacion: '5G (1era ola)',
     etapaActual: 'Construcción',
-    criticidadGeneral: 'EN RIESGO',
+    criticidadGeneral: 'NORMAL', // ✅ Actualizado según VPRE (antes: EN RIESGO)
+    puntajeTotal: 8, // ✅ NUEVO CAMPO
     avanceFisico: 65.5,
     avanceFinanciero: 58.2,
     evaluaciones: [
@@ -61,7 +62,8 @@ export const mockProyectos: Proyecto[] = [
     alcanceTerritorial: 'Andina Central',
     generacion: '5G (1era ola)',
     etapaActual: 'Operación',
-    criticidadGeneral: 'CRÍTICO',
+    criticidadGeneral: 'EN OBSERVACIÓN', // ✅ Actualizado según VPRE (antes: CRÍTICO)
+    puntajeTotal: 11, // ✅ NUEVO CAMPO
     avanceFisico: 95.0,
     avanceFinanciero: 92.5,
     evaluaciones: [
@@ -111,7 +113,8 @@ export const mockProyectos: Proyecto[] = [
     alcanceTerritorial: 'Antioquia',
     generacion: '4G (1era ola)',
     etapaActual: 'Operación',
-    criticidadGeneral: 'CRÍTICO',
+    criticidadGeneral: 'EN OBSERVACIÓN', // ✅ Actualizado según VPRE (antes: CRÍTICO)
+    puntajeTotal: 9, // ✅ NUEVO CAMPO
     avanceFisico: 98.0,
     avanceFinanciero: 96.8,
     evaluaciones: [
@@ -161,7 +164,8 @@ export const mockProyectos: Proyecto[] = [
     alcanceTerritorial: 'Nacional',
     generacion: '5G',
     etapaActual: 'Estructuración',
-    criticidadGeneral: 'EN OBSERVACIÓN',
+    criticidadGeneral: 'NORMAL', // ✅ Actualizado según VPRE (antes: EN OBSERVACIÓN)
+    puntajeTotal: 8, // ✅ NUEVO CAMPO
     avanceFisico: 15.0,
     avanceFinanciero: 12.0,
     evaluaciones: [
@@ -211,7 +215,8 @@ export const mockProyectos: Proyecto[] = [
     alcanceTerritorial: 'Pacífico',
     generacion: '4G',
     etapaActual: 'Construcción',
-    criticidadGeneral: 'EN RIESGO',
+    criticidadGeneral: 'EN OBSERVACIÓN', // ✅ Actualizado según VPRE (antes: EN RIESGO)
+    puntajeTotal: 11, // ✅ NUEVO CAMPO
     avanceFisico: 45.0,
     avanceFinanciero: 42.0,
     evaluaciones: [

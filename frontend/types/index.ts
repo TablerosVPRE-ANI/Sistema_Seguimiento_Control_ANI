@@ -40,7 +40,8 @@ export interface Proyecto {
   alcanceTerritorial: string;
   generacion: string;
   etapaActual: EtapaProyecto;
-  criticidadGeneral?: Criticidad;
+  criticidadGeneral ?: Criticidad;
+  puntajeTotal: number;
   evaluaciones: EvaluacionGIT[];
   
   // Métricas opcionales
@@ -70,3 +71,36 @@ export interface FiltrosDashboard {
   etapa?: EtapaProyecto[];
   busqueda?: string;
 }
+// Tipo para modo de vista del dashboard
+export type VistaMode = 'general' | 'git' | 'seguimiento';
+
+// Estadísticas individuales por GIT
+export interface StatsGIT {
+  git: TipoGIT;
+  totalEvaluaciones: number;
+  criticos: number;
+  enRiesgo: number;
+  enObservacion: number;
+  normales: number;
+  proyectosAfectados: number;
+}
+// ✅ FASE 1: Sistema de Seguimiento y Notas
+
+export interface NotaProyecto {
+  id: string;
+  proyectoId: string;
+  texto: string;
+  fecha: string;
+  autor?: string;
+  tipo: 'seguimiento' | 'accion' | 'observacion' | 'reunion';
+}
+
+export interface ProyectoSeguimiento {
+  proyectoId: string;
+  enSeguimiento: boolean;
+  fechaAgregado: string;
+  notas: NotaProyecto[];
+  prioridad?: 'alta' | 'media' | 'baja';
+}
+
+export type FiltroRapido = 'todos' | 'criticos' | 'enRiesgo' | 'enObservacion' | 'normal';

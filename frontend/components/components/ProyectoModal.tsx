@@ -1,9 +1,11 @@
 // components/ProyectoModal.tsx
 
 import React from 'react';
-import { X, MapPin, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
+import { X, MapPin, Calendar, TrendingUp, AlertCircle, Star } from 'lucide-react';
 import { Proyecto } from '@/types';
 import CriticidadBadge from './CriticidadBadge';
+import NotasProyecto from './NotasProyecto';
+import { useStore } from '@/lib/store';
 
 interface ProyectoModalProps {
   proyecto: Proyecto | null;
@@ -11,7 +13,11 @@ interface ProyectoModalProps {
 }
 
 export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps) {
+  const { toggleSeguimiento, estaEnSeguimiento } = useStore();
+
   if (!proyecto) return null;
+
+  const enSeguimiento = estaEnSeguimiento(proyecto.id);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
@@ -26,6 +32,13 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
               {proyecto.criticidadGeneral && (
                 <CriticidadBadge criticidad={proyecto.criticidadGeneral} />
               )}
+              {/* ✅ Badge de seguimiento */}
+              {enSeguimiento && (
+                <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 border border-yellow-500/30 rounded-md">
+                  <Star className="w-3 h-3 text-yellow-300 fill-yellow-300" />
+                  <span className="text-xs text-yellow-200 font-medium">En seguimiento</span>
+                </div>
+              )}
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">{proyecto.nombre}</h2>
             <div className="flex items-center gap-4 text-sm text-gray-400">
@@ -39,12 +52,30 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
               <span>{proyecto.etapaActual}</span>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <X className="w-6 h-6 text-gray-400" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            {/* ✅ Botón de seguimiento */}
+            <button
+              onClick={() => toggleSeguimiento(proyecto.id)}
+              className={`
+                p-2 rounded-lg transition-all duration-200 border
+                ${enSeguimiento
+                  ? 'bg-yellow-500/30 border-yellow-500 hover:bg-yellow-500/40 text-yellow-200'
+                  : 'bg-white/5 border-white/10 hover:bg-yellow-500/20 hover:border-yellow-500/50 text-gray-300 hover:text-yellow-200'
+                }
+              `}
+              title={enSeguimiento ? 'Quitar de seguimiento' : 'Agregar a seguimiento'}
+            >
+              <Star className={`w-5 h-5 ${enSeguimiento ? 'fill-yellow-300' : ''}`} />
+            </button>
+
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <X className="w-6 h-6 text-gray-400" />
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -130,6 +161,11 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* ✅ NUEVA SECCIÓN: Notas y Seguimiento */}
+          <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+            <NotasProyecto proyectoId={proyecto.id} />
           </div>
         </div>
 

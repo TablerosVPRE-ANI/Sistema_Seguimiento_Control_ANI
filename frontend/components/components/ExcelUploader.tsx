@@ -100,8 +100,6 @@ export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUp
             { git: 'Valorizacion', colEstado: 15, colCriticidad: 16 },
           ];
 
-          let criticidadGeneral: Criticidad | undefined = undefined;
-
           gitsConfig.forEach(({ git, colEstado, colCriticidad }) => {
             const criticidadRaw = String(row[colCriticidad] || '').trim().toUpperCase();
             let criticidad: Criticidad = 'NORMAL';
@@ -119,15 +117,38 @@ export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUp
               estado: String(row[colEstado] || '').trim(),
               fechaEvaluacion: new Date().toISOString().split('T')[0],
             });
-
-            // Determinar criticidad general (la más alta)
-            if (!criticidadGeneral || 
-                (criticidad === 'CRÍTICO') ||
-                (criticidad === 'EN RIESGO' && criticidadGeneral !== 'CRÍTICO') ||
-                (criticidad === 'EN OBSERVACIÓN' && criticidadGeneral === 'NORMAL')) {
-              criticidadGeneral = criticidad;
-            }
           });
+
+          // ✅ CALCULAR PUNTAJE Y CRITICIDAD SEGÚN METODOLOGÍA VPRE
+          const criticidadAPuntos = (crit: Criticidad): number => {
+            const mapa: Record<Criticidad, number> = {
+              'CRÍTICO': 4,
+              'EN RIESGO': 3,
+              'EN OBSERVACIÓN': 2,
+              'NORMAL': 1
+            };
+            return mapa[crit] || 1;
+          };
+
+          // Solo contar los 5 GITs de la metodología VPRE (sin Valorización)
+          const gitsCalculo: TipoGIT[] = ['Social', 'JPredial', 'Predial', 'Ambiental', 'Riesgos'];
+          const evaluacionesRelevantes = evaluaciones.filter(e => gitsCalculo.includes(e.git));
+
+          const puntajeTotal = evaluacionesRelevantes.reduce((suma, evaluacion) => {
+            return suma + criticidadAPuntos(evaluacion.criticidad);
+          }, 0);
+
+          // Calcular criticidad general según rangos VPRE
+          let criticidadGeneralCalculada: Criticidad;
+          if (puntajeTotal >= 17) {
+            criticidadGeneralCalculada = 'CRÍTICO';
+          } else if (puntajeTotal >= 13) {
+            criticidadGeneralCalculada = 'EN RIESGO';
+          } else if (puntajeTotal >= 9) {
+            criticidadGeneralCalculada = 'EN OBSERVACIÓN';
+          } else {
+            criticidadGeneralCalculada = 'NORMAL';
+          }
 
           // Solo agregar el proyecto si tiene al menos una evaluación
           if (evaluaciones.length > 0) {
@@ -139,7 +160,8 @@ export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUp
               alcanceTerritorial: String(row[1] || '').trim(),
               generacion: String(row[3] || '').trim(),
               etapaActual: etapa,
-              criticidadGeneral,
+              criticidadGeneral: criticidadGeneralCalculada,
+              puntajeTotal,
               evaluaciones,
             });
             proyectoId++;
