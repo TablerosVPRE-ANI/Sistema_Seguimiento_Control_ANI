@@ -32,6 +32,9 @@ export default function ProyectosTable({
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
                 Etapa
               </th>
+              <th className="px-6 py-4 text-center text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Puntaje
+              </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
                 Criticidad
               </th>
@@ -72,6 +75,11 @@ export default function ProyectosTable({
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="text-sm text-gray-300">
                     {proyecto.etapaActual}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">
+                  <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 border-2 border-slate-300 font-bold text-lg text-slate-700">
+                    {proyecto.puntajeTotal}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
