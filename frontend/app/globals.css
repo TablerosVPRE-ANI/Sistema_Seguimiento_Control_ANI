@@ -3,6 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* ✅ Colores ANI */
+  --ani-naranja: #da723f;
+  --ani-naranja-dark: #c86437;
+  --ani-gris: #575756;
+  --ani-gris-dark: #3a3a39;
 }
 
 @theme inline {
@@ -23,4 +29,91 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ✅ Aplicar colores ANI */
+
+/* Botón Cargar Excel: verde → naranja ANI */
+.bg-green-500 {
+  background-color: var(--ani-naranja) !important;
+}
+
+.hover\:bg-green-600:hover {
+  background-color: var(--ani-naranja-dark) !important;
+}
+
+/* Botones azules principales → naranja ANI */
+.bg-blue-500 {
+  background-color: var(--ani-naranja) !important;
+}
+
+.hover\:bg-blue-600:hover {
+  background-color: var(--ani-naranja-dark) !important;
+}
+
+/* Avatar VP: azul → naranja ANI */
+.bg-blue-500.rounded-full {
+  background-color: var(--ani-naranja) !important;
+}
+
+/* Header: fondo gris ANI */
+.bg-black\/20.backdrop-blur-lg {
+  background-color: rgba(87, 87, 86, 0.9) !important;
+  border-bottom-color: rgba(218, 114, 63, 0.3) !important;
+}
+
+/* Scrollbar naranja ANI */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ani-naranja);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ani-naranja-dark);
+}
+
+/* ✅ FONDO DEGRADADO CON COLORES ANI */
+.bg-gradient-to-br.from-slate-900.via-blue-900.to-slate-900 {
+  background: linear-gradient(135deg, #575756 0%, #da723f 100%, #2a2420 50%, #3a3530 75%, #575756 100%) !important;
+}
+
+/* Header con fondo gris ANI */
+.bg-slate-900\/95,
+.bg-gray-900\/95 {
+  background-color: rgba(87, 87, 86, 0.95) !important;
+}
+
+/* Bordes sutiles naranja ANI */
+.border-white\/10 {
+  border-color: rgba(218, 114, 63, 0.1) !important;
+}
+
+/* Cards con fondo gris oscuro ANI */
+.bg-white\/5 {
+  background-color: rgba(87, 87, 86, 0.15) !important;
+}
+
+/* Accent naranja ANI */
+.text-blue-400,
+.text-blue-300 {
+  color: #e89164 !important;
+}
+
+/* Botones de tab activos: naranja ANI */
+.bg-orange-500 {
+  background-color: var(--ani-naranja) !important;
+}
+
+.hover\:bg-orange-600:hover {
+  background-color: var(--ani-naranja-dark) !important;
 }
