@@ -161,6 +161,11 @@ export interface ResumenPredial {
   totalPrediosAdquiridosPorcentaje: number;
   totalPrediosFaltantes: number;
   totalPrediosFaltantesPorcentaje: number;
+
+    // ✅ NUEVOS CAMPOS PARA LONGITUDES
+  totalLongitudEfectivaPredialKm: number;
+  totalLongitudEfectivaPredialDisponibleKm: number;
+  totalLongitudEfectivaPredialDisponiblePorcentaje: number;
   
   // Metadata
   ultimaActualizacion: string;
@@ -169,7 +174,7 @@ export interface ResumenPredial {
   // Array con todos los sectores del proyecto
   sectores: SectorPredial[];
   
-  // Estado general calculado
+  // Estado general calculadoPredial
   estadoGeneral: 'Completado' | 'Avanzado' | 'En Progreso' | 'Crítico';
 }
 
