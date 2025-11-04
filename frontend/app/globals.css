@@ -84,7 +84,7 @@ body {
 
 /* ✅ FONDO DEGRADADO CON COLORES ANI */
 .bg-gradient-to-br.from-slate-900.via-blue-900.to-slate-900 {
-  background: linear-gradient(135deg, #575756 0%, #da723f 100%, #2a2420 50%, #3a3530 75%, #575756 100%) !important;
+  background: linear-gradient(135deg, #575756 0%, #3a3a39 25%, #2a2420 50%, #3a3a39 75%, #575756 100%) !important;
 }
 
 /* Header con fondo gris ANI */

@@ -1,5 +1,3 @@
-// app/page.tsx
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,10 +11,10 @@ import ProyectoModal from '@/components/components/ProyectoModal';
 import AlertasPanel from '@/components/components/AlertasPanel';
 import RecomendacionesIA from '@/components/components/RecomendacionesIA';
 import ExcelUploader from '@/components/components/ExcelUploader';
+import ExcelPredialUploader from '@/components/components/ExcelPredialUploader';
 import ViewSelector from '@/components/components/ViewSelector';
 import StatCardsGIT from '@/components/components/StatCardsGIT';
 import ProyectosTableGIT from '@/components/components/ProyectosTableGIT';
-// ✅ FASE 1: Nuevos imports
 import FiltroRapido from '@/components/components/FiltroRapido';
 import PanelCriticos from '@/components/components/PanelCriticos';
 import PanelSeguimiento from '@/components/components/PanelSeguimiento';
@@ -30,6 +28,7 @@ import {
   Shield,
   Upload,
   Star,
+  FileText,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -42,22 +41,22 @@ export default function DashboardPage() {
     setProyectos,
     setFiltros,
     setSelectedProyecto,
-    setVistaActual, // ✅ NUEVO
-    seguimientos, // ✅ NUEVO
+    setVistaActual,
+    seguimientos,
+    cargarDatosPrediales,
   } = useStore();
 
   const [showAlertas, setShowAlertas] = useState(false);
   const [showRecomendaciones, setShowRecomendaciones] = useState(false);
   const [showExcelUploader, setShowExcelUploader] = useState(false);
+  const [showExcelPredialUploader, setShowExcelPredialUploader] = useState(false);
 
-  // Cargar datos iniciales
   useEffect(() => {
     setProyectos(mockProyectos);
   }, [setProyectos]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
-      {/* Header */}
       <header className="border-b border-white/10 bg-black/20 backdrop-blur-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -68,9 +67,9 @@ export default function DashboardPage() {
                 className="h-12 w-auto object-contain"
               />
               <div>
-                <h1 className="text-2xl font-bold">Sistema de Gestión de Proyectos-ANI</h1>
+                <h1 className="text-2xl font-bold">Sistema de Gestión ANI</h1>
                 <p className="text-sm text-gray-400">
-                  Reporte Gerencial - Vicepresidencia de Planeación, Riesgos y Entorno
+                  Dashboard Gerencial - Vicepresidencia de Planeación, Riesgos y Entorno
                 </p>
               </div>
             </div>
@@ -84,6 +83,14 @@ export default function DashboardPage() {
                 Cargar Excel
               </button>
               
+              <button
+                onClick={() => setShowExcelPredialUploader(true)}
+                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-semibold transition-colors flex items-center gap-2"
+              >
+                <FileText className="w-5 h-5" />
+                Datos Prediales
+              </button>
+              
               <button 
                 onClick={() => setShowAlertas(true)}
                 className="relative p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
@@ -94,7 +101,6 @@ export default function DashboardPage() {
                 </span>
               </button>
 
-              {/* ✅ FASE 1: Botón de seguimiento */}
               <button 
                 onClick={() => setVistaActual('seguimiento')}
                 className="relative p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
@@ -118,23 +124,17 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        {/* ✅ Selector de Vista */}
         <div className="flex justify-center">
           <ViewSelector />
         </div>
 
-        {/* ✅ FASE 1: Filtro Rápido - Solo en vistas general y git */}
         {vistaActual !== 'seguimiento' && (
           <FiltroRapido />
         )}
 
-        {/* ✅ RENDERIZADO CONDICIONAL SEGÚN VISTA */}
         {vistaActual === 'general' ? (
           <>
-            {/* Vista General VPRE */}
-            {/* KPIs */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <StatCard
                 title="Total Proyectos"
@@ -166,10 +166,8 @@ export default function DashboardPage() {
               />
             </div>
 
-            {/* ✅ FASE 1: Panel de Proyectos Críticos */}
             <PanelCriticos onSelectProyecto={setSelectedProyecto} />
 
-            {/* Distribución de Criticidad */}
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <BarChart3 className="w-6 h-6 text-blue-400" />
@@ -195,10 +193,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Filtros */}
             <Filtros filtros={filtros} onFiltrosChange={setFiltros} />
 
-            {/* Tabla de Proyectos - Vista General */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold">
@@ -220,7 +216,6 @@ export default function DashboardPage() {
           </>
         ) : vistaActual === 'git' ? (
           <>
-            {/* Vista por GIT */}
             <div>
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <BarChart3 className="w-6 h-6 text-blue-400" />
@@ -229,10 +224,8 @@ export default function DashboardPage() {
               <StatCardsGIT />
             </div>
 
-            {/* Filtros */}
             <Filtros filtros={filtros} onFiltrosChange={setFiltros} />
 
-            {/* Tabla de Proyectos - Vista por GIT */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold">
@@ -254,13 +247,11 @@ export default function DashboardPage() {
           </>
         ) : (
           <>
-            {/* ✅ FASE 1: Vista de Seguimiento */}
             <PanelSeguimiento onSelectProyecto={setSelectedProyecto} />
           </>
         )}
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 bg-black/20 backdrop-blur-lg mt-12">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <p className="text-center text-sm text-gray-400">
@@ -269,7 +260,6 @@ export default function DashboardPage() {
         </div>
       </footer>
 
-      {/* Modales y Paneles */}
       <ProyectoModal
         proyecto={selectedProyecto}
         onClose={() => setSelectedProyecto(null)}
@@ -292,6 +282,15 @@ export default function DashboardPage() {
           setShowExcelUploader(false);
         }}
         onClose={() => setShowExcelUploader(false)}
+      />
+
+      <ExcelPredialUploader
+        isOpen={showExcelPredialUploader}
+        onDataLoaded={(resumenes) => {
+          cargarDatosPrediales(resumenes);
+          setShowExcelPredialUploader(false);
+        }}
+        onClose={() => setShowExcelPredialUploader(false)}
       />
     </div>
   );

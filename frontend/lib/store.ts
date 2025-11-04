@@ -1,9 +1,8 @@
 // lib/store.ts
 
 import { create } from 'zustand';
-import { Proyecto, FiltrosDashboard, DashboardStats, Criticidad, TipoGIT, EvaluacionGIT, VistaMode, StatsGIT, ProyectoSeguimiento, NotaProyecto, FiltroRapido } from '@/types';
+import { Proyecto, FiltrosDashboard, DashboardStats, Criticidad, TipoGIT, EvaluacionGIT, VistaMode, StatsGIT, ProyectoSeguimiento, NotaProyecto, FiltroRapido, ResumenPredial, ProyectoConPredial } from '@/types';
 
-// Mapeo de criticidad a puntos según metodología VPRE
 const criticidadAPuntos = (criticidad: Criticidad): number => {
   const mapa: Record<Criticidad, number> = {
     'CRÍTICO': 4,
@@ -14,25 +13,20 @@ const criticidadAPuntos = (criticidad: Criticidad): number => {
   return mapa[criticidad] || 1;
 };
 
-// GITs que se usan en el cálculo (sin Valorización)
 const GITS_CALCULO: TipoGIT[] = ['Social', 'JPredial', 'Predial', 'Ambiental', 'Riesgos'];
 
-// Calcular criticidad general según metodología VPRE
 const calcularCriticidadGeneral = (evaluaciones: EvaluacionGIT[]): { 
   criticidad: Criticidad; 
   puntaje: number 
 } => {
-  // Filtrar solo los GITs que se usan en el cálculo
   const evaluacionesRelevantes = evaluaciones.filter(e => 
     GITS_CALCULO.includes(e.git)
   );
   
-  // Sumar puntos de los 5 GITs
   const puntajeTotal = evaluacionesRelevantes.reduce((suma, evaluacion) => {
     return suma + criticidadAPuntos(evaluacion.criticidad);
   }, 0);
   
-  // Clasificar según rangos de la metodología VPRE
   let criticidad: Criticidad;
   if (puntajeTotal >= 17) {
     criticidad = 'CRÍTICO';
@@ -47,26 +41,32 @@ const calcularCriticidadGeneral = (evaluaciones: EvaluacionGIT[]): {
   return { criticidad, puntaje: puntajeTotal };
 };
 
+const normalizarNombreProyecto = (nombre: string): string => {
+  return nombre
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/[áàäâ]/g, 'a')
+    .replace(/[éèëê]/g, 'e')
+    .replace(/[íìïî]/g, 'i')
+    .replace(/[óòöô]/g, 'o')
+    .replace(/[úùüû]/g, 'u')
+    .replace(/ñ/g, 'n');
+};
+
 interface AppState {
-  // Datos
   proyectos: Proyecto[];
   proyectosFiltrados: Proyecto[];
   stats: DashboardStats;
   vistaActual: VistaMode;
   statsGIT: StatsGIT[];
-  
-  // ✅ FASE 1: Seguimiento y Filtros
   seguimientos: ProyectoSeguimiento[];
   filtroRapido: FiltroRapido;
-  
-  // Filtros
+  resumenesPrediales: ResumenPredial[];
   filtros: FiltrosDashboard;
-  
-  // UI State
   loading: boolean;
   selectedProyecto: Proyecto | null;
   
-  // Actions
   setProyectos: (proyectos: Proyecto[]) => void;
   setFiltros: (filtros: FiltrosDashboard) => void;
   aplicarFiltros: () => void;
@@ -74,17 +74,16 @@ interface AppState {
   calcularStats: () => void;
   setVistaActual: (vista: VistaMode) => void;
   calcularStatsGIT: () => void;
-  
-  // ✅ FASE 1: Funciones de seguimiento
   toggleSeguimiento: (proyectoId: string) => void;
   agregarNota: (proyectoId: string, nota: Omit<NotaProyecto, 'id' | 'proyectoId' | 'fecha'>) => void;
   obtenerNotasProyecto: (proyectoId: string) => NotaProyecto[];
   estaEnSeguimiento: (proyectoId: string) => boolean;
   setFiltroRapido: (filtro: FiltroRapido) => void;
+  cargarDatosPrediales: (resumenes: ResumenPredial[]) => void;
+  obtenerResumenPredial: (proyectoNombre: string) => ResumenPredial | undefined;
 }
 
 export const useStore = create<AppState>((set, get) => ({
-  // Estado inicial
   proyectos: [],
   proyectosFiltrados: [],
   stats: {
@@ -98,28 +97,28 @@ export const useStore = create<AppState>((set, get) => ({
   },
   vistaActual: 'general',
   statsGIT: [],
-  
-  // ✅ FASE 1: Estados iniciales
   seguimientos: [],
   filtroRapido: 'todos',
-  
+  resumenesPrediales: [],
   filtros: {},
   loading: false,
   selectedProyecto: null,
 
-  // ✅ Inicializar seguimientos desde localStorage
   ...(typeof window !== 'undefined' && (() => {
     try {
       const seguimientosGuardados = localStorage.getItem('ani_seguimientos');
-      return seguimientosGuardados ? { seguimientos: JSON.parse(seguimientosGuardados) } : {};
+      const resumenesPrediales = localStorage.getItem('ani_resumenes_prediales');
+      
+      return {
+        ...(seguimientosGuardados ? { seguimientos: JSON.parse(seguimientosGuardados) } : {}),
+        ...(resumenesPrediales ? { resumenesPrediales: JSON.parse(resumenesPrediales) } : {})
+      };
     } catch {
       return {};
     }
   })()),
 
-  // Acciones
   setProyectos: (proyectos) => {
-    // ✅ Calcular criticidad general y puntaje para cada proyecto según metodología VPRE
     const proyectosConCriticidad = proyectos.map(p => {
       const { criticidad, puntaje } = calcularCriticidadGeneral(p.evaluaciones);
       return {
@@ -129,9 +128,30 @@ export const useStore = create<AppState>((set, get) => ({
       };
     });
     
+    const { resumenesPrediales } = get();
+    
+    const proyectosConPredial = proyectosConCriticidad.map(proyecto => {
+      const resumenPredial = resumenesPrediales.find(r => 
+        normalizarNombreProyecto(r.proyectoNombre) === normalizarNombreProyecto(proyecto.nombre)
+      );
+      
+      if (resumenPredial) {
+        return {
+          ...proyecto,
+          resumenPredial,
+          tieneDatosPrediales: true
+        } as ProyectoConPredial;
+      }
+      
+      return {
+        ...proyecto,
+        tieneDatosPrediales: false
+      } as ProyectoConPredial;
+    });
+    
     set({ 
-      proyectos: proyectosConCriticidad,
-      proyectosFiltrados: proyectosConCriticidad
+      proyectos: proyectosConPredial,
+      proyectosFiltrados: proyectosConPredial
     });
     get().calcularStats();
     get().calcularStatsGIT();
@@ -146,7 +166,6 @@ export const useStore = create<AppState>((set, get) => ({
     const { proyectos, filtros, filtroRapido } = get();
     let filtrados = [...proyectos];
 
-    // ✅ Aplicar filtro rápido primero
     if (filtroRapido !== 'todos') {
       switch (filtroRapido) {
         case 'criticos':
@@ -164,7 +183,6 @@ export const useStore = create<AppState>((set, get) => ({
       }
     }
 
-    // Filtros existentes
     if (filtros.tipoProyecto && filtros.tipoProyecto.length > 0) {
       filtrados = filtrados.filter(p => 
         filtros.tipoProyecto!.includes(p.tipoProyecto)
@@ -217,7 +235,6 @@ export const useStore = create<AppState>((set, get) => ({
       recomendacionesIA: 0,
     };
 
-    // ✅ CONTAR PROYECTOS POR SU CRITICIDAD GENERAL (Metodología VPRE)
     proyectos.forEach(proyecto => {
       switch (proyecto.criticidadGeneral) {
         case 'CRÍTICO':
@@ -279,7 +296,6 @@ export const useStore = create<AppState>((set, get) => ({
         };
         localStorage.setItem('ani_dashboard_tipos', JSON.stringify(distribucionTipo));
         
-        // Métricas avanzadas por GIT
         const gitMetrics: any = {};
         const gitsArray = ['Social', 'Predial', 'JPredial', 'Ambiental', 'Riesgos', 'Valorizacion'];
 
@@ -360,7 +376,6 @@ export const useStore = create<AppState>((set, get) => ({
 
         localStorage.setItem('ani_dashboard_vpre_metrics', JSON.stringify(metricsVPRE));
 
-        // Calcular completitud de información por GIT
         const gitCompletitud: any = {};
         gitsArray.forEach(git => {
           const evaluacionesGit = proyectos
@@ -396,7 +411,6 @@ export const useStore = create<AppState>((set, get) => ({
 
   setVistaActual: (vista) => {
     set({ vistaActual: vista });
-    // Recalcular stats según la vista
     if (vista === 'git') {
       get().calcularStatsGIT();
     }
@@ -408,18 +422,15 @@ export const useStore = create<AppState>((set, get) => ({
     const gitsArray: TipoGIT[] = ['Social', 'JPredial', 'Predial', 'Ambiental', 'Riesgos', 'Valorizacion'];
     
     const statsGIT: StatsGIT[] = gitsArray.map(git => {
-      // Filtrar todas las evaluaciones de este GIT
       const evaluacionesGIT = proyectos
         .map(p => p.evaluaciones.find(e => e.git === git))
         .filter(e => e !== undefined) as EvaluacionGIT[];
       
-      // Contar por criticidad
       const criticos = evaluacionesGIT.filter(e => e.criticidad === 'CRÍTICO').length;
       const enRiesgo = evaluacionesGIT.filter(e => e.criticidad === 'EN RIESGO').length;
       const enObservacion = evaluacionesGIT.filter(e => e.criticidad === 'EN OBSERVACIÓN').length;
       const normales = evaluacionesGIT.filter(e => e.criticidad === 'NORMAL').length;
       
-      // Contar proyectos únicos afectados (con crítico o en riesgo en este GIT)
       const proyectosAfectados = proyectos.filter(p => 
         p.evaluaciones.some(e => 
           e.git === git && (e.criticidad === 'CRÍTICO' || e.criticidad === 'EN RIESGO')
@@ -439,8 +450,6 @@ export const useStore = create<AppState>((set, get) => ({
     
     set({ statsGIT });
   },
-
-  // ✅ FASE 1: Funciones de seguimiento
   
   toggleSeguimiento: (proyectoId) => {
     const { seguimientos } = get();
@@ -449,10 +458,8 @@ export const useStore = create<AppState>((set, get) => ({
     let nuevosSeguimientos: ProyectoSeguimiento[];
     
     if (index >= 0) {
-      // Quitar de seguimiento
       nuevosSeguimientos = seguimientos.filter(s => s.proyectoId !== proyectoId);
     } else {
-      // Agregar a seguimiento
       const nuevoSeguimiento: ProyectoSeguimiento = {
         proyectoId,
         enSeguimiento: true,
@@ -463,7 +470,6 @@ export const useStore = create<AppState>((set, get) => ({
       nuevosSeguimientos = [...seguimientos, nuevoSeguimiento];
     }
     
-    // Guardar en localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('ani_seguimientos', JSON.stringify(nuevosSeguimientos));
     }
@@ -491,7 +497,6 @@ export const useStore = create<AppState>((set, get) => ({
       return s;
     });
     
-    // Si el proyecto no está en seguimiento, agregarlo
     if (!nuevosSeguimientos.find(s => s.proyectoId === proyectoId)) {
       nuevosSeguimientos.push({
         proyectoId,
@@ -502,7 +507,6 @@ export const useStore = create<AppState>((set, get) => ({
       });
     }
     
-    // Guardar en localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('ani_seguimientos', JSON.stringify(nuevosSeguimientos));
     }
@@ -524,6 +528,44 @@ export const useStore = create<AppState>((set, get) => ({
   setFiltroRapido: (filtro) => {
     set({ filtroRapido: filtro });
     get().aplicarFiltros();
+  },
+
+  cargarDatosPrediales: (resumenes) => {
+    set({ resumenesPrediales: resumenes });
+    
+    const proyectosActualizados = get().proyectos.map(proyecto => {
+      const resumenPredial = resumenes.find(r => 
+        normalizarNombreProyecto(r.proyectoNombre) === normalizarNombreProyecto(proyecto.nombre)
+      );
+      
+      if (resumenPredial) {
+        return {
+          ...proyecto,
+          resumenPredial,
+          tieneDatosPrediales: true
+        } as ProyectoConPredial;
+      }
+      
+      return {
+        ...proyecto,
+        tieneDatosPrediales: false
+      } as ProyectoConPredial;
+    });
+    
+    set({ proyectos: proyectosActualizados, proyectosFiltrados: proyectosActualizados });
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ani_resumenes_prediales', JSON.stringify(resumenes));
+    }
+    
+    const proyectosConDatos = proyectosActualizados.filter(p => (p as ProyectoConPredial).tieneDatosPrediales).length;
+    console.log(`✅ Empatados ${proyectosConDatos} proyectos con datos prediales`);
+  },
+
+  obtenerResumenPredial: (proyectoNombre) => {
+    return get().resumenesPrediales.find(r => 
+      normalizarNombreProyecto(r.proyectoNombre) === normalizarNombreProyecto(proyectoNombre)
+    );
   },
 
 }));

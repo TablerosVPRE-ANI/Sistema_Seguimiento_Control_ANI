@@ -104,3 +104,80 @@ export interface ProyectoSeguimiento {
 }
 
 export type FiltroRapido = 'todos' | 'criticos' | 'enRiesgo' | 'enObservacion' | 'normal';
+
+// ================================
+// ✅ SEGUIMIENTO PREDIAL - MÚLTIPLES PROYECTOS
+// ================================
+
+/**
+ * Representa un sector/tramo individual de un proyecto
+ * Ejemplo: "SECTOR I TABLON - PUENTE TELLEZ"
+ */
+export interface SectorPredial {
+  // Identificación
+  unidadFuncional: string;
+  
+  // Longitudes
+  longitudProyectoKm?: number;
+  longitudEfectivaPredialTotalKm?: number;
+  longitudEfectivaPredialDisponibleKm?: number;
+  longitudEfectivaPredialDisponiblePorcentaje?: number;
+  
+  // Predios requeridos y disponibles
+  prediosRequeridos: number;
+  prediosConOfertaNotificada?: number;
+  prediosDisponibles?: number;
+  prediosDisponiblesPorcentaje?: number;
+  
+  // Adquisición por método
+  prediosAdquiridosEnajenacionVoluntaria: number;
+  prediosAdquiridosEnajenacionVoluntariaPorcentaje?: number;
+  prediosAdquiridosExpropiacionJudicial: number;
+  prediosAdquiridosExpropiacionJudicialPorcentaje?: number;
+  
+  // Totales del sector
+  totalPrediosAdquiridos: number;
+  totalPrediosAdquiridosPorcentaje: number;
+  prediosFaltantesPorAdquirir: number;
+  prediosFaltantesPorcentaje: number;
+  
+  // Observaciones y estado
+  observaciones?: string;
+  estadoSector: 'Completado' | 'Avanzado' | 'En Progreso' | 'Crítico';
+}
+
+/**
+ * Resumen completo de gestión predial de UN proyecto
+ * Incluye todos sus sectores y totales agregados (SUBTOTAL)
+ */
+export interface ResumenPredial {
+  // Identificación (para empatar con proyecto existente)
+  proyectoNombre: string;
+  generacion: string;
+  
+  // Totales agregados del proyecto (suma de todos los sectores)
+  totalPrediosRequeridos: number;
+  totalPrediosAdquiridos: number;
+  totalPrediosAdquiridosPorcentaje: number;
+  totalPrediosFaltantes: number;
+  totalPrediosFaltantesPorcentaje: number;
+  
+  // Metadata
+  ultimaActualizacion: string;
+  tecnicoACargo: string;
+  
+  // Array con todos los sectores del proyecto
+  sectores: SectorPredial[];
+  
+  // Estado general calculado
+  estadoGeneral: 'Completado' | 'Avanzado' | 'En Progreso' | 'Crítico';
+}
+
+/**
+ * Extiende el Proyecto existente para incluir datos prediales
+ * Todos los proyectos usarán esta interface
+ */
+export interface ProyectoConPredial extends Proyecto {
+  resumenPredial?: ResumenPredial;
+  tieneDatosPrediales: boolean;
+}
