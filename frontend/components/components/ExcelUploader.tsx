@@ -11,6 +11,12 @@ interface ExcelUploaderProps {
   onClose: () => void;
 }
 
+// ✅ PASO 2.1: Función auxiliar para leer columnas de forma segura
+const getCellValue = (row: any[], colIndex: number): string | undefined => {
+  const value = row[colIndex];
+  return value && value !== '' && value !== 'NaN' ? String(value).trim() : undefined;
+};
+
 export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUploaderProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,44 +86,85 @@ export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUp
           else if (etapaRaw.includes('OPERACIÓN')) etapa = 'Operación';
           else if (etapaRaw.includes('REVERSIÓN')) etapa = 'Reversión';
 
-          // Extraer evaluaciones de cada GIT
+          // ✅ PASO 2.2: Extraer evaluaciones de cada GIT con HITOS y ACCIONES
           const evaluaciones: EvaluacionGIT[] = [];
-          
-          // Estructura de columnas (basado en tu Excel):
-          // Col 5-6: Riesgos (estado, criticidad)
-          // Col 7-8: JPredial (estado, criticidad)
-          // Col 9-10: Predial (estado, criticidad)
-          // Col 11-12: Social (estado, criticidad)
-          // Col 13-14: Ambiental (estado, criticidad)
-          // Col 15-16: Valorización (estado, criticidad)
+          const fecha = new Date().toISOString().split('T')[0];
 
-          const gitsConfig = [
-            { git: 'Riesgos', colEstado: 5, colCriticidad: 6 },
-            { git: 'JPredial', colEstado: 7, colCriticidad: 8 },
-            { git: 'Predial', colEstado: 9, colCriticidad: 10 },
-            { git: 'Social', colEstado: 11, colCriticidad: 12 },
-            { git: 'Ambiental', colEstado: 13, colCriticidad: 14 },
-            { git: 'Valorizacion', colEstado: 15, colCriticidad: 16 },
-          ];
-
-          gitsConfig.forEach(({ git, colEstado, colCriticidad }) => {
-            const criticidadRaw = String(row[colCriticidad] || '').trim().toUpperCase();
-            let criticidad: Criticidad = 'NORMAL';
-
-            if (criticidadRaw === 'CRÍTICO') criticidad = 'CRÍTICO';
-            else if (criticidadRaw === 'EN RIESGO') criticidad = 'EN RIESGO';
-            else if (criticidadRaw === 'EN OBSERVACIÓN') criticidad = 'EN OBSERVACIÓN';
-            else if (criticidadRaw === 'NORMAL') criticidad = 'NORMAL';
-            else if (criticidadRaw !== '') criticidad = 'NORMAL';
-            else return; // Skip si no hay criticidad
-
+          // GIT RIESGOS (Columnas 5-8)
+          const estadoRiesgos = getCellValue(row, 5);
+          if (estadoRiesgos) {
             evaluaciones.push({
-              git: git as TipoGIT,
-              criticidad,
-              estado: String(row[colEstado] || '').trim(),
-              fechaEvaluacion: new Date().toISOString().split('T')[0],
+              git: 'Riesgos',
+              criticidad: getCellValue(row, 8) as Criticidad || 'NORMAL',
+              estado: estadoRiesgos,
+              hitosClave: getCellValue(row, 6),
+              accionesADesarrollar: getCellValue(row, 7),
+              fechaEvaluacion: fecha,
             });
-          });
+          }
+
+          // GIT JPREDIAL (Columnas 9-12)
+          const estadoJPredial = getCellValue(row, 9);
+          if (estadoJPredial) {
+            evaluaciones.push({
+              git: 'JPredial',
+              criticidad: getCellValue(row, 12) as Criticidad || 'NORMAL',
+              estado: estadoJPredial,
+              hitosClave: getCellValue(row, 10),
+              accionesADesarrollar: getCellValue(row, 11),
+              fechaEvaluacion: fecha,
+            });
+          }
+
+          // GIT PREDIAL (Columnas 13-16)
+          const estadoPredial = getCellValue(row, 13);
+          if (estadoPredial) {
+            evaluaciones.push({
+              git: 'Predial',
+              criticidad: getCellValue(row, 16) as Criticidad || 'NORMAL',
+              estado: estadoPredial,
+              hitosClave: getCellValue(row, 14),
+              accionesADesarrollar: getCellValue(row, 15),
+              fechaEvaluacion: fecha,
+            });
+          }
+
+          // GIT SOCIAL (Columnas 17-20)
+          const estadoSocial = getCellValue(row, 17);
+          if (estadoSocial) {
+            evaluaciones.push({
+              git: 'Social',
+              criticidad: getCellValue(row, 20) as Criticidad || 'NORMAL',
+              estado: estadoSocial,
+              hitosClave: getCellValue(row, 18),
+              accionesADesarrollar: getCellValue(row, 19),
+              fechaEvaluacion: fecha,
+            });
+          }
+
+          // GIT AMBIENTAL (Columnas 21-24)
+          const estadoAmbiental = getCellValue(row, 21);
+          if (estadoAmbiental) {
+            evaluaciones.push({
+              git: 'Ambiental',
+              criticidad: getCellValue(row, 24) as Criticidad || 'NORMAL',
+              estado: estadoAmbiental,
+              hitosClave: getCellValue(row, 22),
+              accionesADesarrollar: getCellValue(row, 23),
+              fechaEvaluacion: fecha,
+            });
+          }
+
+          // GIT VALORIZACIÓN (Columnas 25-26) - Sin estado, hitos ni acciones
+          const criticidadValorizacion = getCellValue(row, 26);
+          if (criticidadValorizacion) {
+            evaluaciones.push({
+              git: 'Valorizacion',
+              criticidad: criticidadValorizacion as Criticidad || 'NORMAL',
+              estado: '', // Valorización no tiene estado en esta estructura
+              fechaEvaluacion: fecha,
+            });
+          }
 
           // ✅ CALCULAR PUNTAJE Y CRITICIDAD SEGÚN METODOLOGÍA VPRE
           const criticidadAPuntos = (crit: Criticidad): number => {
@@ -210,7 +257,7 @@ export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUp
             <div>
               <h2 className="text-2xl font-bold text-white">Cargar Datos desde Excel</h2>
               <p className="text-sm text-gray-400 mt-1">
-                Sube tu archivo Base_Datos_Proyectos_011025.xlsx
+                Sube tu archivo Base_Datos_Proyectos_1025_1.xlsx
               </p>
             </div>
           </div>
@@ -290,9 +337,10 @@ export default function ExcelUploader({ isOpen, onDataLoaded, onClose }: ExcelUp
           <h3 className="font-semibold text-white mb-2">📋 Formato esperado del Excel:</h3>
           <ul className="text-sm text-gray-300 space-y-1">
             <li>• Hojas: Carreteros, Ferreo, Puertos y Fluvial, Aeropuertos</li>
-            <li>• Fila 5: Headers (NO., ALCANCE, PROYECTO, GENERACION, ETAPA, ...)</li>
-            <li>• Columnas de GIT: Riesgos, JPredial, Predial, Social, Ambiental, Valorización</li>
-            <li>• Cada GIT tiene 2 columnas: Estado y Criticidad</li>
+            <li>• Fila 5: Inicio de datos (después de headers)</li>
+            <li>• GITs incluidos: Riesgos, JPredial, Predial, Social, Ambiental, Valorización</li>
+            <li>• Cada GIT (excepto Valorización): Estado, Hitos, Acciones, Criticidad</li>
+            <li>• Valorización: Solo Criticidad</li>
           </ul>
         </div>
       </div>

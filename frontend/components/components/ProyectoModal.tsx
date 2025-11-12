@@ -7,6 +7,7 @@ import CriticidadBadge from './CriticidadBadge';
 import NotasProyecto from './NotasProyecto';
 import SeguimientoPredial from './SeguimientoPredial';
 import { useStore } from '@/lib/store';
+import HitosAccionesProgress from './HitosAccionesProgress';
 
 interface ProyectoModalProps {
   proyecto: Proyecto | null;
@@ -131,35 +132,80 @@ export default function ProyectoModal({ proyecto, onClose }: ProyectoModalProps)
               </div>
             )}
 
-            <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-purple-400" />
-                Evaluaciones por GIT
-              </h3>
-              <div className="space-y-4">
-                {proyecto.evaluaciones.map((evaluacion, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-black/30 rounded-lg p-4 border border-white/5"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-white">{evaluacion.git}</span>
-                        <CriticidadBadge criticidad={evaluacion.criticidad} size="sm" />
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        {new Date(evaluacion.fechaEvaluacion).toLocaleDateString('es-CO')}
-                      </span>
-                    </div>
-                    {evaluacion.estado && (
-                      <p className="text-sm text-gray-300 leading-relaxed">
-                        {evaluacion.estado}
-                      </p>
-                    )}
-                  </div>
-                ))}
+{/* ✅ SECCIÓN DE EVALUACIONES CON PROGRESO */}
+<div className="bg-white/5 rounded-xl p-6 border border-white/10">
+  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+    <AlertCircle className="w-5 h-5 text-purple-400" />
+    Evaluaciones por GIT
+  </h3>
+  <div className="space-y-4">
+    {proyecto.evaluaciones.map((evaluacion, idx) => (
+      <div
+        key={idx}
+        className="border border-gray-200/10 rounded-lg p-4 hover:border-blue-400/30 transition-colors bg-black/30"
+      >
+        {/* Header con GIT y Criticidad */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-white">{evaluacion.git}</span>
+            <CriticidadBadge criticidad={evaluacion.criticidad} size="sm" />
+          </div>
+          <span className="text-sm text-gray-500">
+            {new Date(evaluacion.fechaEvaluacion).toLocaleDateString('es-CO')}
+          </span>
+        </div>
+
+        {/* Estado Actual */}
+        {evaluacion.estado && (
+          <div className="mb-3">
+            <div className="flex items-start gap-2">
+              <span className="text-sm font-medium text-gray-400 mt-0.5">📝</span>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-gray-400 uppercase mb-1">
+                  Estado Actual
+                </p>
+                <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  {evaluacion.estado}
+                </p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Hitos Claves CON PROGRESO */}
+        {evaluacion.hitosClave && (
+          <HitosAccionesProgress
+            proyectoId={proyecto.id}
+            git={evaluacion.git}
+            texto={evaluacion.hitosClave}
+            tipo="hitos"
+            icono="🎯"
+            titulo="Hitos Claves"
+          />
+        )}
+
+        {/* Acciones a Desarrollar CON PROGRESO */}
+        {evaluacion.accionesADesarrollar && (
+          <HitosAccionesProgress
+            proyectoId={proyecto.id}
+            git={evaluacion.git}
+            texto={evaluacion.accionesADesarrollar}
+            tipo="acciones"
+            icono="✅"
+            titulo="Acciones a Desarrollar"
+          />
+        )}
+
+        {/* Mensaje para Valorización sin campos adicionales */}
+        {evaluacion.git === 'Valorizacion' && !evaluacion.estado && (
+          <p className="text-sm text-gray-500 italic">
+            Sin información adicional disponible para este GIT
+          </p>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
 
             <div className="bg-white/5 rounded-xl p-6 border border-white/10">
               <NotasProyecto proyectoId={proyecto.id} />

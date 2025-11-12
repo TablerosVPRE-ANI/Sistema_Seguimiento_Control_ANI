@@ -30,6 +30,8 @@ export interface EvaluacionGIT {
   estado: string;
   observaciones?: string;
   fechaEvaluacion: string;
+  hitosClave?: string;              // ✅ NUEVO
+  accionesADesarrollar?: string;    // ✅ NUEVO
 }
 
 export interface Proyecto {
@@ -185,4 +187,21 @@ export interface ResumenPredial {
 export interface ProyectoConPredial extends Proyecto {
   resumenPredial?: ResumenPredial;
   tieneDatosPrediales: boolean;
+}
+// ================================
+// ✅ SISTEMA DE SEGUIMIENTO DE HITOS Y ACCIONES
+// ================================
+
+export interface ItemSeguimiento {
+  id: string;
+  texto: string;
+  completado: boolean;
+  fechaCompletado?: string;
+}
+
+export interface SeguimientoHitosAcciones {
+  proyectoId: string;
+  evaluacionGit: TipoGIT;
+  hitos: ItemSeguimiento[];
+  acciones: ItemSeguimiento[];
 }
